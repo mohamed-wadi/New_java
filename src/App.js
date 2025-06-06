@@ -12,7 +12,7 @@ function App() {
         <TPSelection />
       </main>
       <footer>
-        <p>© 2024 Java Programming Exercises</p>
+        <p>© 2025 Wadi Mohammed</p>
       </footer>
     </div>
   );

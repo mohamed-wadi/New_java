@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import '../App.css';
 
 const TPSelection = () => {
@@ -9,6 +9,23 @@ const TPSelection = () => {
     const [scores, setScores] = useState({});
     const [showSolutions, setShowSolutions] = useState({});
     const [selectedFile, setSelectedFile] = useState({});
+    const [showScrollTop, setShowScrollTop] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setShowScrollTop(window.pageYOffset > 300);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    };
 
     const tp1Questions = [
         {
@@ -1438,6 +1455,1317 @@ public class Main {
         }
     ];
 
+    const tp3v3Questions = [
+        {
+            id: "ex1",
+            title: "Exercice 1 : Polymorphisme",
+            description: `Un centre de formation accepte plusieurs types de paiement pour les frais d'inscription. Ces
+paiements peuvent être faits en espèces, par carte bancaire ou par virement.`,
+            files: [
+                {
+                    id: "ex1_paiement",
+                    name: "Paiement.java",
+                    package: "ma.formation.paiement",
+                    expectedCode: `package ma.formation.paiement;
+
+public class Paiement {
+    protected double montant;
+    
+    public Paiement(double montant) {
+        this.montant = montant;
+    }
+    
+    public void effectuerPaiement() {
+        System.out.println("Paiement générique de " + montant + " dirhams.");
+    }
+}`
+                },
+                {
+                    id: "ex1_espece",
+                    name: "PaiementEspece.java",
+                    package: "ma.formation.paiement",
+                    expectedCode: `package ma.formation.paiement;
+
+public class PaiementEspece extends Paiement {
+    public PaiementEspece(double montant) {
+        super(montant);
+    }
+    
+    @Override
+    public void effectuerPaiement() {
+        System.out.println("Paiement en espèces de " + montant + " dirhams effectué.");
+    }
+}`
+                },
+                {
+                    id: "ex1_carte",
+                    name: "PaiementCarte.java",
+                    package: "ma.formation.paiement",
+                    expectedCode: `package ma.formation.paiement;
+
+public class PaiementCarte extends Paiement {
+    public PaiementCarte(double montant) {
+        super(montant);
+    }
+    
+    @Override
+    public void effectuerPaiement() {
+        System.out.println("Paiement par carte de " + montant + " dirhams effectué.");
+    }
+}`
+                },
+                {
+                    id: "ex1_virement",
+                    name: "PaiementVirement.java",
+                    package: "ma.formation.paiement",
+                    expectedCode: `package ma.formation.paiement;
+
+public class PaiementVirement extends Paiement {
+    public PaiementVirement(double montant) {
+        super(montant);
+    }
+    
+    @Override
+    public void effectuerPaiement() {
+        System.out.println("Paiement par virement de " + montant + " dirhams effectué.");
+    }
+}`
+                },
+                {
+                    id: "ex1_test",
+                    name: "TestPaiement.java",
+                    package: "ma.formation.paiement",
+                    expectedCode: `package ma.formation.paiement;
+
+public class TestPaiement {
+    public static void main(String[] args) {
+        Paiement[] paiements = new Paiement[4];
+        
+        paiements[0] = new Paiement(1000);
+        paiements[1] = new PaiementEspece(2000);
+        paiements[2] = new PaiementCarte(3000);
+        paiements[3] = new PaiementVirement(4000);
+        
+        for (Paiement p : paiements) {
+            p.effectuerPaiement();
+        }
+    }
+}`
+                }
+            ]
+        },
+        {
+            id: "ex2",
+            title: "Exercice 2 : Classes abstraites",
+            description: `Un établissement emploie des professeurs permanents et des professeurs vacataires,
+rémunérés différemment.`,
+            files: [
+                {
+                    id: "ex2_employe",
+                    name: "Employe.java",
+                    package: "ma.formation.employes",
+                    expectedCode: `package ma.formation.employes;
+
+public abstract class Employe {
+    protected String nom;
+    protected String prenom;
+    protected int heuresTravaillees;
+    
+    public Employe(String nom, String prenom, int heuresTravaillees) {
+        this.nom = nom;
+        this.prenom = prenom;
+        this.heuresTravaillees = heuresTravaillees;
+    }
+    
+    public abstract double calculerSalaire();
+    
+    public void afficherInfos() {
+        System.out.println("Nom: " + nom);
+        System.out.println("Prénom: " + prenom);
+        System.out.println("Heures travaillées: " + heuresTravaillees);
+        System.out.println("Salaire: " + calculerSalaire() + " DH");
+    }
+}`
+                },
+                {
+                    id: "ex2_permanent",
+                    name: "ProfesseurPermanent.java",
+                    package: "ma.formation.employes",
+                    expectedCode: `package ma.formation.employes;
+
+public class ProfesseurPermanent extends Employe {
+    private static final double SALAIRE_MENSUEL = 7000.0;
+    
+    public ProfesseurPermanent(String nom, String prenom, int heuresTravaillees) {
+        super(nom, prenom, heuresTravaillees);
+    }
+    
+    @Override
+    public double calculerSalaire() {
+        return SALAIRE_MENSUEL;
+    }
+}`
+                },
+                {
+                    id: "ex2_vacataire",
+                    name: "ProfesseurVacataire.java",
+                    package: "ma.formation.employes",
+                    expectedCode: `package ma.formation.employes;
+
+public class ProfesseurVacataire extends Employe {
+    private static final double TAUX_HORAIRE = 150.0;
+    
+    public ProfesseurVacataire(String nom, String prenom, int heuresTravaillees) {
+        super(nom, prenom, heuresTravaillees);
+    }
+    
+    @Override
+    public double calculerSalaire() {
+        return heuresTravaillees * TAUX_HORAIRE;
+    }
+}`
+                },
+                {
+                    id: "ex2_test",
+                    name: "TestEmploye.java",
+                    package: "ma.formation.employes",
+                    expectedCode: `package ma.formation.employes;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class TestEmploye {
+    public static void main(String[] args) {
+        List<Employe> employes = new ArrayList<>();
+        
+        employes.add(new ProfesseurPermanent("Alami", "Hassan", 160));
+        employes.add(new ProfesseurVacataire("Benani", "Sara", 80));
+        
+        for (Employe e : employes) {
+            e.afficherInfos();
+            System.out.println();
+        }
+    }
+}`
+                }
+            ]
+        },
+        {
+            id: "ex3",
+            title: "Exercice 3 : Interfaces",
+            description: `On souhaite créer un système de notification multicanal.`,
+            files: [
+                {
+                    id: "ex3_notifiable",
+                    name: "Notifiable.java",
+                    package: "ma.formation.notification",
+                    expectedCode: `package ma.formation.notification;
+
+public interface Notifiable {
+    void envoyerNotification(String message);
+}`
+                },
+                {
+                    id: "ex3_email",
+                    name: "NotificationEmail.java",
+                    package: "ma.formation.notification",
+                    expectedCode: `package ma.formation.notification;
+
+public class NotificationEmail implements Notifiable {
+    @Override
+    public void envoyerNotification(String message) {
+        System.out.println("Email envoyé: " + message);
+    }
+}`
+                },
+                {
+                    id: "ex3_sms",
+                    name: "NotificationSMS.java",
+                    package: "ma.formation.notification",
+                    expectedCode: `package ma.formation.notification;
+
+public class NotificationSMS implements Notifiable {
+    @Override
+    public void envoyerNotification(String message) {
+        System.out.println("SMS envoyé: " + message);
+    }
+}`
+                },
+                {
+                    id: "ex3_app",
+                    name: "NotificationAppMobile.java",
+                    package: "ma.formation.notification",
+                    expectedCode: `package ma.formation.notification;
+
+public class NotificationAppMobile implements Notifiable {
+    @Override
+    public void envoyerNotification(String message) {
+        System.out.println("Notification mobile envoyée: " + message);
+    }
+}`
+                },
+                {
+                    id: "ex3_manager",
+                    name: "NotificationManager.java",
+                    package: "ma.formation.notification",
+                    expectedCode: `package ma.formation.notification;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class NotificationManager {
+    private List<Notifiable> canaux;
+    
+    public NotificationManager() {
+        this.canaux = new ArrayList<>();
+    }
+    
+    public void ajouterCanal(Notifiable canal) {
+        canaux.add(canal);
+    }
+    
+    public void envoyerNotificationATous(String message) {
+        for (Notifiable canal : canaux) {
+            canal.envoyerNotification(message);
+        }
+    }
+}`
+                }
+            ]
+        },
+        {
+            id: "ex4",
+            title: "Exercice 4 : Interface Cloneable",
+            description: `Dans une application pédagogique, il faut permettre aux formateurs de dupliquer un document.`,
+            files: [
+                {
+                    id: "ex4_document",
+                    name: "Document.java",
+                    package: "ma.formation.document",
+                    expectedCode: `package ma.formation.document;
+
+public class Document implements Cloneable {
+    private String titre;
+    private String contenu;
+    private String auteur;
+    
+    public Document(String titre, String contenu, String auteur) {
+        this.titre = titre;
+        this.contenu = contenu;
+        this.auteur = auteur;
+    }
+    
+    @Override
+    public Document clone() throws CloneNotSupportedException {
+        Document clone = (Document) super.clone();
+        return clone;
+    }
+    
+    public void setTitre(String titre) {
+        this.titre = titre;
+    }
+    
+    @Override
+    public String toString() {
+        return "Document{" +
+               "titre='" + titre + "', " +
+               "contenu='" + contenu + "', " +
+               "auteur='" + auteur + "'}";
+    }
+}`
+                },
+                {
+                    id: "ex4_test",
+                    name: "TestDocument.java",
+                    package: "ma.formation.document",
+                    expectedCode: `package ma.formation.document;
+
+public class TestDocument {
+    public static void main(String[] args) {
+        try {
+            Document doc1 = new Document("Java POO", "Cours sur la POO en Java", "Ahmed Alami");
+            System.out.println("Document original: " + doc1);
+            
+            Document doc2 = doc1.clone();
+            doc2.setTitre("Java POO - Copie");
+            
+            System.out.println("\\nAprès modification du clone:");
+            System.out.println("Document original: " + doc1);
+            System.out.println("Document cloné: " + doc2);
+            
+        } catch (CloneNotSupportedException e) {
+            System.out.println("Erreur lors du clonage: " + e.getMessage());
+        }
+    }
+}`
+                }
+            ]
+        },
+        {
+            id: "ex5",
+            title: "Exercice 5 : Classe générique",
+            description: `On souhaite créer une structure générique pour représenter des conteneurs de ressources
+pédagogiques dans un centre de formation.`,
+            files: [
+                {
+                    id: "ex5_conteneur",
+                    name: "ConteneurRessource.java",
+                    package: "ma.formation.generique",
+                    expectedCode: `package ma.formation.generique;
+
+public class ConteneurRessource<T> {
+    private T contenu;
+    
+    public void ajouter(T element) {
+        this.contenu = element;
+    }
+    
+    public T obtenir() {
+        return contenu;
+    }
+    
+    public void afficherContenu() {
+        if (contenu != null) {
+            System.out.println("Contenu: " + contenu.toString());
+        } else {
+            System.out.println("Conteneur vide");
+        }
+    }
+}`
+                },
+                {
+                    id: "ex5_test",
+                    name: "TestConteneur.java",
+                    package: "ma.formation.generique",
+                    expectedCode: `package ma.formation.generique;
+
+import ma.formation.document.Document;
+
+public class TestConteneur {
+    public static void main(String[] args) {
+        // Test avec String
+        ConteneurRessource<String> conteneurModule = new ConteneurRessource<>();
+        conteneurModule.ajouter("Algorithmique");
+        System.out.println("Conteneur de module:");
+        conteneurModule.afficherContenu();
+        
+        // Test avec Integer
+        ConteneurRessource<Integer> conteneurId = new ConteneurRessource<>();
+        conteneurId.ajouter(101);
+        System.out.println("\\nConteneur d'identifiant:");
+        conteneurId.afficherContenu();
+        
+        // Test avec Document
+        Document doc = new Document("Java POO", "Cours sur la POO", "Ahmed Alami");
+        ConteneurRessource<Document> conteneurDoc = new ConteneurRessource<>();
+        conteneurDoc.ajouter(doc);
+        System.out.println("\\nConteneur de document:");
+        conteneurDoc.afficherContenu();
+    }
+}`
+                }
+            ]
+        }
+    ];
+
+    const tp4Questions = [
+        {
+            id: "ex1",
+            title: "Exercice 1 : Accès à un tableau",
+            description: `Objectif : Comprendre et gérer l'exception ArrayIndexOutOfBoundsException.
+
+Énoncé :
+Écrire un programme Java qui crée un tableau de 5 entiers et demande à l'utilisateur de
+saisir un indice pour afficher la valeur correspondante. Si l'indice est en dehors des
+bornes du tableau, le programme doit afficher un message d'erreur adapté sans
+s'arrêter brutalement.`,
+            expectedFunction: `import java.util.Scanner;
+
+public class ExerciceTableau {
+    public static void main(String[] args) {
+        int[] tableau = {10, 20, 30, 40, 50};
+        Scanner scanner = new Scanner(System.in);
+        
+        try {
+            System.out.print("Entrez un indice (0-4) : ");
+            int indice = scanner.nextInt();
+            System.out.println("La valeur à l'indice " + indice + " est : " + tableau[indice]);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Erreur : L'indice doit être compris entre 0 et 4.");
+        } catch (Exception e) {
+            System.out.println("Erreur de saisie : Veuillez entrer un nombre entier.");
+        }
+    }
+}`
+        },
+        {
+            id: "ex2",
+            title: "Exercice 2 : Conversion de chaînes",
+            description: `Objectif : Manipuler NumberFormatException.
+
+Énoncé :
+Écrire un programme qui demande à l'utilisateur de saisir une chaîne de caractères
+censée représenter un entier. Convertir cette chaîne en entier à l'aide de
+Integer.parseInt. Si la chaîne ne représente pas un entier valide, afficher un
+message d'erreur approprié.`,
+            expectedFunction: `import java.util.Scanner;
+
+public class ConversionChaines {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.print("Entrez un nombre entier : ");
+        String saisie = scanner.nextLine();
+        
+        try {
+            int nombre = Integer.parseInt(saisie);
+            System.out.println("Le nombre saisi est : " + nombre);
+        } catch (NumberFormatException e) {
+            System.out.println("Erreur : '" + saisie + "' n'est pas un nombre entier valide.");
+        }
+    }
+}`
+        },
+        {
+            id: "ex3",
+            title: "Exercice 3 : Création d'une exception personnalisée",
+            description: `Objectif : Créer et utiliser une classe dérivée de Exception.
+
+Énoncé :
+Créer une classe AgeInvalideException qui hérite de Exception. Écrire une
+méthode qui prend un âge en paramètre et lève cette exception si l'âge est inférieur à
+18. Écrire un programme qui appelle cette méthode et affiche un message adapté si
+l'exception est levée.`,
+            expectedFunction: `class AgeInvalideException extends Exception {
+    public AgeInvalideException(String message) {
+        super(message);
+    }
+}
+
+public class VerificationAge {
+    public static void verifierAge(int age) throws AgeInvalideException {
+        if (age < 18) {
+            throw new AgeInvalideException("L'âge doit être supérieur ou égal à 18 ans.");
+        }
+        System.out.println("Age valide : " + age + " ans");
+    }
+    
+    public static void main(String[] args) {
+        try {
+            verifierAge(16);
+        } catch (AgeInvalideException e) {
+            System.out.println("Erreur : " + e.getMessage());
+        }
+        
+        try {
+            verifierAge(20);
+        } catch (AgeInvalideException e) {
+            System.out.println("Erreur : " + e.getMessage());
+        }
+    }
+}`
+        },
+        {
+            id: "ex4",
+            title: "Exercice 4 : Gestion de plusieurs exceptions",
+            description: `Objectif : Utiliser plusieurs blocs catch pour intercepter différents types
+d'exceptions.
+
+Énoncé :
+Écrire un programme qui demande à l'utilisateur de saisir deux entiers. Il effectue
+ensuite une division du premier par le second. Gérer à la fois les erreurs de format de
+saisie (NumberFormatException) et la division par zéro (ArithmeticException).
+Afficher des messages d'erreur spécifiques à chaque cas.`,
+            expectedFunction: `import java.util.Scanner;
+
+public class DivisionSecurisee {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        try {
+            System.out.print("Entrez le premier nombre : ");
+            String str1 = scanner.nextLine();
+            int num1 = Integer.parseInt(str1);
+            
+            System.out.print("Entrez le deuxième nombre : ");
+            String str2 = scanner.nextLine();
+            int num2 = Integer.parseInt(str2);
+            
+            int resultat = num1 / num2;
+            System.out.println("Résultat de la division : " + resultat);
+            
+        } catch (NumberFormatException e) {
+            System.out.println("Erreur : Veuillez entrer des nombres entiers valides.");
+        } catch (ArithmeticException e) {
+            System.out.println("Erreur : Division par zéro impossible.");
+        }
+    }
+}`
+        },
+        {
+            id: "ex5",
+            title: "Exercice 5 : Bloc finally et ressource fermée",
+            description: `Objectif : Utiliser un bloc finally pour garantir l'exécution finale, quelle que soit
+l'issue du traitement.
+
+Énoncé :
+Simuler l'ouverture et la fermeture d'une ressource (par exemple un fichier ou une
+connexion) avec des messages comme "Ressource ouverte" et "Ressource fermée".
+Intégrer un traitement intermédiaire qui peut provoquer une exception. Utiliser un bloc
+finally pour afficher "Ressource fermée" dans tous les cas.`,
+            expectedFunction: `public class GestionRessource {
+    public static void traiterRessource() {
+        System.out.println("Ressource ouverte");
+        
+        try {
+            // Simulation d'un traitement qui peut échouer
+            int resultat = 10 / 0; // Provoque une ArithmeticException
+            System.out.println("Résultat : " + resultat);
+            
+        } catch (ArithmeticException e) {
+            System.out.println("Erreur pendant le traitement : " + e.getMessage());
+            
+        } finally {
+            System.out.println("Ressource fermée");
+        }
+    }
+    
+    public static void main(String[] args) {
+        traiterRessource();
+    }
+}`
+        },
+        {
+            id: "ex6",
+            title: "Exercice 6 : Propagation d'exception avec throws",
+            description: `Objectif : Utiliser le mot-clé throws pour propager une exception.
+
+Énoncé :
+Écrire une méthode calculerRacineCarrée(double x) qui lève une exception si x
+est négatif, sinon retourne la racine carrée. Gérer l'exception dans la méthode
+principale (main). Utiliser le mot-clé throws pour indiquer la propagation de
+l'exception.`,
+            expectedFunction: `public class CalculRacine {
+    public static double calculerRacineCarree(double x) throws IllegalArgumentException {
+        if (x < 0) {
+            throw new IllegalArgumentException("Impossible de calculer la racine carrée d'un nombre négatif");
+        }
+        return Math.sqrt(x);
+    }
+    
+    public static void main(String[] args) {
+        double[] valeurs = {16.0, -4.0, 25.0, -1.0};
+        
+        for (double valeur : valeurs) {
+            try {
+                double racine = calculerRacineCarree(valeur);
+                System.out.println("La racine carrée de " + valeur + " est : " + racine);
+            } catch (IllegalArgumentException e) {
+                System.out.println("Erreur pour " + valeur + " : " + e.getMessage());
+            }
+        }
+    }
+}`
+        },
+        {
+            id: "ex7",
+            title: "Exercice 7 : Système de validation d'inscription",
+            description: `Objectif : Intégrer une exception personnalisée dans un contexte applicatif.
+
+Énoncé :
+Créer une classe InscriptionException pour signaler un échec de validation. Écrire
+une méthode validerInscription(String nom, int age) qui lève cette exception
+si le nom est vide ou si l'âge est en dehors de l'intervalle [18, 60]. Tester cette
+méthode dans un programme principal.`,
+            expectedFunction: `class InscriptionException extends Exception {
+    public InscriptionException(String message) {
+        super(message);
+    }
+}
+
+public class SystemeInscription {
+    public static void validerInscription(String nom, int age) throws InscriptionException {
+        if (nom == null || nom.trim().isEmpty()) {
+            throw new InscriptionException("Le nom ne peut pas être vide");
+        }
+        if (age < 18 || age > 60) {
+            throw new InscriptionException("L'âge doit être compris entre 18 et 60 ans");
+        }
+        System.out.println("Inscription validée pour " + nom + ", " + age + " ans");
+    }
+    
+    public static void main(String[] args) {
+        // Test avec différents cas
+        try {
+            validerInscription("", 25);
+        } catch (InscriptionException e) {
+            System.out.println("Erreur : " + e.getMessage());
+        }
+        
+        try {
+            validerInscription("Jean", 15);
+        } catch (InscriptionException e) {
+            System.out.println("Erreur : " + e.getMessage());
+        }
+        
+        try {
+            validerInscription("Marie", 30);
+        } catch (InscriptionException e) {
+            System.out.println("Erreur : " + e.getMessage());
+        }
+    }
+}`
+        },
+        {
+            id: "ex8",
+            title: "Exercice 8 : Mini simulateur bancaire",
+            description: `Objectif : Gérer plusieurs types d'exceptions dans une simulation plus réaliste.
+
+Énoncé :
+Simuler un compte bancaire avec une méthode retirerArgent(double montant)
+qui lève une exception si le montant est négatif ou supérieur au solde. Simuler
+également des erreurs de saisie utilisateur. Utiliser des exceptions standards et
+personnalisées. Le programme doit continuer à fonctionner même après une erreur.`,
+            expectedFunction: `class SoldeInsuffisantException extends Exception {
+    public SoldeInsuffisantException(String message) {
+        super(message);
+    }
+}
+
+class MontantInvalideException extends Exception {
+    public MontantInvalideException(String message) {
+        super(message);
+    }
+}
+
+public class CompteBancaire {
+    private double solde;
+    private String titulaire;
+    
+    public CompteBancaire(String titulaire, double soldeInitial) {
+        this.titulaire = titulaire;
+        this.solde = soldeInitial;
+    }
+    
+    public void retirerArgent(double montant) throws SoldeInsuffisantException, MontantInvalideException {
+        if (montant < 0) {
+            throw new MontantInvalideException("Le montant du retrait ne peut pas être négatif");
+        }
+        if (montant > solde) {
+            throw new SoldeInsuffisantException("Solde insuffisant pour effectuer le retrait");
+        }
+        solde -= montant;
+        System.out.println("Retrait de " + montant + "€ effectué. Nouveau solde : " + solde + "€");
+    }
+    
+    public static void main(String[] args) {
+        CompteBancaire compte = new CompteBancaire("Jean Dupont", 1000);
+        
+        try {
+            compte.retirerArgent(-100);
+        } catch (MontantInvalideException e) {
+            System.out.println("Erreur : " + e.getMessage());
+        } catch (SoldeInsuffisantException e) {
+            System.out.println("Erreur : " + e.getMessage());
+        }
+        
+        try {
+            compte.retirerArgent(1500);
+        } catch (MontantInvalideException e) {
+            System.out.println("Erreur : " + e.getMessage());
+        } catch (SoldeInsuffisantException e) {
+            System.out.println("Erreur : " + e.getMessage());
+        }
+        
+        try {
+            compte.retirerArgent(500);
+        } catch (MontantInvalideException | SoldeInsuffisantException e) {
+            System.out.println("Erreur : " + e.getMessage());
+        }
+    }
+}`
+        }
+    ];
+
+    const tp5Questions = [
+        {
+            id: "ex1",
+            title: "Exercice 1 : Recherche dans une Liste",
+            description: `Écrivez un programme qui crée une liste de chaînes de caractères contenant
+des noms d'étudiants. Ensuite, demandez à l'utilisateur d'entrer un nom d'étudiant. Votre
+programme doit vérifier si ce nom est présent dans la liste et afficher un message approprié.`,
+            expectedFunction: `import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+public class RechercheEtudiant {
+    public static void main(String[] args) {
+        // Création de la liste d'étudiants
+        List<String> etudiants = new ArrayList<>();
+        etudiants.add("Ahmed");
+        etudiants.add("Sara");
+        etudiants.add("Karim");
+        etudiants.add("Fatima");
+        etudiants.add("Mohammed");
+        
+        // Lecture du nom à rechercher
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Entrez le nom de l'étudiant à rechercher : ");
+        String nomRecherche = scanner.nextLine();
+        
+        // Recherche du nom dans la liste
+        if (etudiants.contains(nomRecherche)) {
+            System.out.println("L'étudiant " + nomRecherche + " est présent dans la liste.");
+        } else {
+            System.out.println("L'étudiant " + nomRecherche + " n'est pas dans la liste.");
+        }
+    }
+}`
+        },
+        {
+            id: "ex2",
+            title: "Exercice 2 : Intersection d'Ensembles",
+            description: `Créez deux ensembles de nombres entiers aléatoires. Ensuite, trouvez
+l'intersection de ces deux ensembles (les éléments communs) et affichez-la.`,
+            expectedFunction: `import java.util.HashSet;
+import java.util.Set;
+import java.util.Random;
+
+public class IntersectionEnsembles {
+    public static void main(String[] args) {
+        Random random = new Random();
+        Set<Integer> ensemble1 = new HashSet<>();
+        Set<Integer> ensemble2 = new HashSet<>();
+        
+        // Remplissage des ensembles avec des nombres aléatoires
+        for (int i = 0; i < 10; i++) {
+            ensemble1.add(random.nextInt(20));
+            ensemble2.add(random.nextInt(20));
+        }
+        
+        System.out.println("Ensemble 1 : " + ensemble1);
+        System.out.println("Ensemble 2 : " + ensemble2);
+        
+        // Calcul de l'intersection
+        Set<Integer> intersection = new HashSet<>(ensemble1);
+        intersection.retainAll(ensemble2);
+        
+        System.out.println("Intersection : " + intersection);
+    }
+}`
+        },
+        {
+            id: "ex3",
+            title: "Exercice 3 : Comptage de Mots",
+            description: `Écrivez un programme qui demande à l'utilisateur d'entrer une phrase.
+Ensuite, le programme doit compter le nombre d'occurrences de chaque mot dans la
+phrase et afficher le résultat sous forme de map (mot -> nombre d'occurrences).`,
+            expectedFunction: `import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class ComptageMots {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Entrez une phrase :");
+        String phrase = scanner.nextLine().toLowerCase();
+        
+        // Séparation des mots et comptage
+        String[] mots = phrase.split("\\s+");
+        Map<String, Integer> occurrences = new HashMap<>();
+        
+        for (String mot : mots) {
+            occurrences.put(mot, occurrences.getOrDefault(mot, 0) + 1);
+        }
+        
+        // Affichage des résultats
+        System.out.println("\\nNombre d'occurrences de chaque mot :");
+        for (Map.Entry<String, Integer> entry : occurrences.entrySet()) {
+            System.out.println(entry.getKey() + " : " + entry.getValue());
+        }
+    }
+}`
+        },
+        {
+            id: "ex4",
+            title: "Exercice 4 : File d'Attente",
+            description: `Implémentez un simulateur de file d'attente simple. Créez une file
+d'attente pour les clients avec une capacité maximale fixée. Les clients arrivent et
+partent de la file d'attente. Affichez les actions (arrivée, départ) et l'état de la file
+d'attente après chaque action.`,
+            expectedFunction: `import java.util.LinkedList;
+import java.util.Queue;
+
+public class FileAttente {
+    private Queue<String> file;
+    private int capaciteMax;
+    
+    public FileAttente(int capaciteMax) {
+        this.file = new LinkedList<>();
+        this.capaciteMax = capaciteMax;
+    }
+    
+    public boolean ajouterClient(String client) {
+        if (file.size() < capaciteMax) {
+            file.offer(client);
+            System.out.println("Arrivée : " + client);
+            afficherEtat();
+            return true;
+        } else {
+            System.out.println("File pleine, impossible d'ajouter : " + client);
+            return false;
+        }
+    }
+    
+    public String retirerClient() {
+        String client = file.poll();
+        if (client != null) {
+            System.out.println("Départ : " + client);
+            afficherEtat();
+        }
+        return client;
+    }
+    
+    public void afficherEtat() {
+        System.out.println("État de la file : " + file);
+        System.out.println("Nombre de clients : " + file.size() + "/" + capaciteMax + "\\n");
+    }
+    
+    public static void main(String[] args) {
+        FileAttente file = new FileAttente(3);
+        
+        file.ajouterClient("Client 1");
+        file.ajouterClient("Client 2");
+        file.ajouterClient("Client 3");
+        file.ajouterClient("Client 4"); // Devrait être refusé
+        file.retirerClient();
+        file.ajouterClient("Client 4"); // Devrait être accepté maintenant
+    }
+}`
+        },
+        {
+            id: "ex5",
+            title: "Exercice 5 : Notes des Étudiants",
+            description: `Écrivez un programme qui prend une liste de noms d'étudiants et leurs
+notes, puis stocke ces données dans une map où les noms sont les clés et les notes
+sont les valeurs. Ensuite, calculez la moyenne des notes et affichez-la.`,
+            expectedFunction: `import java.util.HashMap;
+import java.util.Map;
+
+public class GestionNotes {
+    private Map<String, Double> notes;
+    
+    public GestionNotes() {
+        this.notes = new HashMap<>();
+    }
+    
+    public void ajouterNote(String nom, double note) {
+        notes.put(nom, note);
+    }
+    
+    public double calculerMoyenne() {
+        if (notes.isEmpty()) {
+            return 0.0;
+        }
+        
+        double somme = 0.0;
+        for (double note : notes.values()) {
+            somme += note;
+        }
+        return somme / notes.size();
+    }
+    
+    public void afficherNotes() {
+        System.out.println("Notes des étudiants :");
+        for (Map.Entry<String, Double> entry : notes.entrySet()) {
+            System.out.println(entry.getKey() + " : " + entry.getValue());
+        }
+    }
+    
+    public static void main(String[] args) {
+        GestionNotes gestion = new GestionNotes();
+        
+        gestion.ajouterNote("Ahmed", 15.5);
+        gestion.ajouterNote("Sara", 17.0);
+        gestion.ajouterNote("Karim", 14.0);
+        gestion.ajouterNote("Fatima", 18.5);
+        
+        gestion.afficherNotes();
+        System.out.println("\\nMoyenne de la classe : " + gestion.calculerMoyenne());
+    }
+}`
+        },
+        {
+            id: "ex6",
+            title: "Exercice 6 : Tri avec Comparable",
+            description: `Écrivez une classe Personne avec les attributs nom, âge et taille.
+Implémentez l'interface Comparable pour que les instances de Personne puissent être
+triées par âge croissant. Ensuite, créez une liste de personnes et triez-la à l'aide de la
+méthode Collections.sort().`,
+            expectedFunction: `import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class Personne implements Comparable<Personne> {
+    private String nom;
+    private int age;
+    private double taille;
+    
+    public Personne(String nom, int age, double taille) {
+        this.nom = nom;
+        this.age = age;
+        this.taille = taille;
+    }
+    
+    @Override
+    public int compareTo(Personne autre) {
+        return Integer.compare(this.age, autre.age);
+    }
+    
+    @Override
+    public String toString() {
+        return nom + " (âge: " + age + ", taille: " + taille + "m)";
+    }
+    
+    public static void main(String[] args) {
+        List<Personne> personnes = new ArrayList<>();
+        personnes.add(new Personne("Ahmed", 25, 1.75));
+        personnes.add(new Personne("Sara", 20, 1.65));
+        personnes.add(new Personne("Karim", 30, 1.80));
+        
+        System.out.println("Avant le tri :");
+        for (Personne p : personnes) {
+            System.out.println(p);
+        }
+        
+        Collections.sort(personnes);
+        
+        System.out.println("\\nAprès le tri par âge :");
+        for (Personne p : personnes) {
+            System.out.println(p);
+        }
+    }
+}`
+        },
+        {
+            id: "ex7",
+            title: "Exercice 7 : Tri avec Comparator",
+            description: `Écrivez une classe Voiture avec les attributs marque, modèle et année.
+Ensuite, créez une classe TriAnneeComparator qui implémente l'interface
+Comparator<Voiture> pour trier les voitures par année décroissante. Testez votre
+comparateur en triant une liste de voitures.`,
+            expectedFunction: `import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+class Voiture {
+    private String marque;
+    private String modele;
+    private int annee;
+    
+    public Voiture(String marque, String modele, int annee) {
+        this.marque = marque;
+        this.modele = modele;
+        this.annee = annee;
+    }
+    
+    public int getAnnee() {
+        return annee;
+    }
+    
+    @Override
+    public String toString() {
+        return marque + " " + modele + " (" + annee + ")";
+    }
+}
+
+class TriAnneeComparator implements Comparator<Voiture> {
+    @Override
+    public int compare(Voiture v1, Voiture v2) {
+        return Integer.compare(v2.getAnnee(), v1.getAnnee()); // Ordre décroissant
+    }
+}
+
+public class TestVoiture {
+    public static void main(String[] args) {
+        List<Voiture> voitures = new ArrayList<>();
+        voitures.add(new Voiture("Renault", "Clio", 2018));
+        voitures.add(new Voiture("Peugeot", "208", 2020));
+        voitures.add(new Voiture("Dacia", "Sandero", 2019));
+        
+        System.out.println("Avant le tri :");
+        for (Voiture v : voitures) {
+            System.out.println(v);
+        }
+        
+        Collections.sort(voitures, new TriAnneeComparator());
+        
+        System.out.println("\\nAprès le tri par année décroissante :");
+        for (Voiture v : voitures) {
+            System.out.println(v);
+        }
+    }
+}`
+        },
+        {
+            id: "ex8",
+            title: "Exercice 8 : Tri Multiple avec Comparator",
+            description: `Écrivez une classe Etudiant avec les attributs nom, âge et note. Ensuite,
+créez une classe TriNoteAgeComparator qui implémente l'interface
+Comparator<Etudiant> pour trier les étudiants d'abord par note décroissante, puis par
+âge croissante en cas d'égalité des notes. Testez votre comparateur en triant une liste
+d'étudiants.`,
+            expectedFunction: `import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+class Etudiant {
+    private String nom;
+    private int age;
+    private double note;
+    
+    public Etudiant(String nom, int age, double note) {
+        this.nom = nom;
+        this.age = age;
+        this.note = note;
+    }
+    
+    public int getAge() {
+        return age;
+    }
+    
+    public double getNote() {
+        return note;
+    }
+    
+    @Override
+    public String toString() {
+        return nom + " (âge: " + age + ", note: " + note + ")";
+    }
+}
+
+class TriNoteAgeComparator implements Comparator<Etudiant> {
+    @Override
+    public int compare(Etudiant e1, Etudiant e2) {
+        // D'abord comparer les notes (ordre décroissant)
+        int compareNote = Double.compare(e2.getNote(), e1.getNote());
+        
+        // Si les notes sont égales, comparer les âges (ordre croissant)
+        if (compareNote == 0) {
+            return Integer.compare(e1.getAge(), e2.getAge());
+        }
+        
+        return compareNote;
+    }
+}
+
+public class TestEtudiant {
+    public static void main(String[] args) {
+        List<Etudiant> etudiants = new ArrayList<>();
+        etudiants.add(new Etudiant("Ahmed", 20, 15.5));
+        etudiants.add(new Etudiant("Sara", 19, 15.5));
+        etudiants.add(new Etudiant("Karim", 22, 17.0));
+        etudiants.add(new Etudiant("Fatima", 21, 14.0));
+        
+        System.out.println("Avant le tri :");
+        for (Etudiant e : etudiants) {
+            System.out.println(e);
+        }
+        
+        Collections.sort(etudiants, new TriNoteAgeComparator());
+        
+        System.out.println("\\nAprès le tri (note décroissante, puis âge croissant) :");
+        for (Etudiant e : etudiants) {
+            System.out.println(e);
+        }
+    }
+}`
+        }
+    ];
+
+    const examQuestions = [
+        {
+            id: "q0",
+            title: "Question 0 : Constructeur WagonMarchandise",
+            description: `Dans la classe WagonMarchandise, donner le code du constructeur.`,
+            expectedFunction: `public WagonMarchandise(String code, String description, float volume) {
+    super(code, description);
+    if (volume > volumeMax) {
+        throw new IllegalArgumentException("Volume dépasse le maximum autorisé");
+    }
+    this.volume = volume;
+    nombreWagonsMarchandise++;
+}`
+        },
+        {
+            id: "q1",
+            title: "Question 1 : Getter/Setter VolumeMax",
+            description: `Dans la classe WagonMarchandise, donner le code du getter et/ou setter pour l'attribut VolumeMax.`,
+            expectedFunction: `// Getter uniquement car VolumeMax est final
+public static float getVolumeMax() {
+    return volumeMax;
+}`
+        },
+        {
+            id: "q2",
+            title: "Question 2 : Getter/Setter nombreWagonsMarchandise",
+            description: `Dans la classe WagonMarchandise, donner le code du getter et/ou setter pour l'attribut nombreWagonsMarchandise.`,
+            expectedFunction: `public static int getNombreWagonsMarchandise() {
+    return nombreWagonsMarchandise;
+}
+
+// Pas de setter public car géré en interne par le constructeur et éventuellement le destructeur`
+        },
+        {
+            id: "q3",
+            title: "Question 3 : Méthode toString WagonMarchandise",
+            description: `Dans la classe WagonMarchandise, donner le code de la méthode toString.`,
+            expectedFunction: `@Override
+public String toString() {
+    return super.toString() + 
+           "\\nType: Wagon Marchandise" +
+           "\\nVolume: " + volume + " m³" +
+           "\\nVolume Maximum: " + volumeMax + " m³";
+}`
+        },
+        {
+            id: "q4",
+            title: "Question 4 : Premier Constructeur Train",
+            description: `Dans la classe Train, donner le code du premier constructeur.`,
+            expectedFunction: `public Train(String code, Personnel conducteur, TypeTrain type) {
+    this.code = code;
+    this.conducteur = conducteur;
+    this.type = type;
+    this.wagons = new ArrayList<>();
+    this.longueur = 0;
+}`
+        },
+        {
+            id: "q5",
+            title: "Question 5 : Deuxième Constructeur Train",
+            description: `Dans la classe Train, donner le code du deuxième constructeur.`,
+            expectedFunction: `public Train(String code, Personnel conducteur, TypeTrain type, ArrayList<Wagon> wagons) 
+    throws TrainWagonIncompatiblesException {
+    this(code, conducteur, type);
+    for (Wagon wagon : wagons) {
+        ajouterWagon(wagon);
+    }
+}`
+        },
+        {
+            id: "q6",
+            title: "Question 6 : Getter/Setter longueur Train",
+            description: `Dans la classe Train, donner le getter et/ou setter pour l'attribut longueur.`,
+            expectedFunction: `public int getLongueur() {
+    return longueur;
+}
+
+// Pas de setter public car la longueur est gérée en interne lors de l'ajout/suppression des wagons`
+        },
+        {
+            id: "q7",
+            title: "Question 7 : Méthode ajouterWagonMinerai",
+            description: `Dans la classe Train, donner le code de la méthode ajouterWagonMinerai.`,
+            expectedFunction: `public void ajouterWagonMinerai(String code, String description, float tonnage) 
+    throws TrainWagonIncompatiblesException {
+    if (type != TypeTrain.Minerai) {
+        throw new TrainWagonIncompatiblesException(
+            "Impossible d'ajouter un wagon minerai à un train de type " + type);
+    }
+    WagonMinerai wagon = new WagonMinerai(code, description, tonnage);
+    wagons.add(wagon);
+    longueur++;
+}`
+        },
+        {
+            id: "q8",
+            title: "Question 8 : Méthode ajouterWagon",
+            description: `Dans la classe Train, donner le code de la méthode ajouterWagon.`,
+            expectedFunction: `public void ajouterWagon(Wagon wagon) throws TrainWagonIncompatiblesException {
+    // Vérification de la compatibilité du wagon avec le type du train
+    if (wagon instanceof WagonPassagers) {
+        if (type != TypeTrain.Passagers && type != TypeTrain.PassagersMarchandise) {
+            throw new TrainWagonIncompatiblesException("Wagon passagers incompatible");
+        }
+    } else if (wagon instanceof WagonMarchandise) {
+        if (type != TypeTrain.Marchandise && type != TypeTrain.PassagersMarchandise) {
+            throw new TrainWagonIncompatiblesException("Wagon marchandise incompatible");
+        }
+    } else if (wagon instanceof WagonMinerai) {
+        if (type != TypeTrain.Minerai) {
+            throw new TrainWagonIncompatiblesException("Wagon minerai incompatible");
+        }
+    }
+    
+    wagons.add(wagon);
+    longueur++;
+}`
+        },
+        {
+            id: "q9",
+            title: "Question 9 : Méthode supprimerWagon",
+            description: `Dans la classe Train, donner le code de la méthode supprimerWagon.`,
+            expectedFunction: `public boolean supprimerWagon(String code) {
+    for (Iterator<Wagon> iterator = wagons.iterator(); iterator.hasNext();) {
+        Wagon wagon = iterator.next();
+        if (wagon.getCode().equals(code)) {
+            iterator.remove();
+            longueur--;
+            return true;
+        }
+    }
+    return false;
+}`
+        },
+        {
+            id: "q10",
+            title: "Question 10 : Méthode afficherCharge",
+            description: `Dans la classe Train, donner le code de la méthode afficherCharge.`,
+            expectedFunction: `public void afficherCharge() {
+    switch (type) {
+        case Passagers:
+        case PassagersMarchandise:
+            int totalPassagers = 0;
+            for (Wagon w : wagons) {
+                if (w instanceof WagonPassagers) {
+                    totalPassagers += ((WagonPassagers) w).getNombrePassagers();
+                }
+            }
+            System.out.println("Nombre total de passagers : " + totalPassagers);
+            
+            if (type == TypeTrain.PassagersMarchandise) {
+                float volumeTotal = 0;
+                for (Wagon w : wagons) {
+                    if (w instanceof WagonMarchandise) {
+                        volumeTotal += ((WagonMarchandise) w).getVolume();
+                    }
+                }
+                System.out.println("Volume total des marchandises : " + volumeTotal + " m³");
+            }
+            break;
+            
+        case Marchandise:
+            float volumeTotalMarchandises = 0;
+            for (Wagon w : wagons) {
+                volumeTotalMarchandises += ((WagonMarchandise) w).getVolume();
+            }
+            System.out.println("Volume total des marchandises : " + volumeTotalMarchandises + " m³");
+            break;
+            
+        case Minerai:
+            float tonnageTotal = 0;
+            for (Wagon w : wagons) {
+                tonnageTotal += ((WagonMinerai) w).getTonnage();
+            }
+            System.out.println("Tonnage total de minerai : " + tonnageTotal + " tonnes");
+            break;
+    }
+}`
+        }
+    ];
+
     const handleCodeChange = (exerciseId, fileId, newCode) => {
         setUserCodes(prev => ({
             ...prev,
@@ -1614,26 +2942,211 @@ public class Main {
         );
     };
 
+    const qcmQuestions = [
+        {
+            id: 1,
+            question: "Que signifie JDK ?",
+            options: ["Java Development Kit", "Java Deployment Kit", "Java Design Kit", "Java Debugging Kit"],
+            correctAnswer: 0
+        },
+        {
+            id: 2,
+            question: "Quelle commande permet de compiler un fichier Java ?",
+            options: ["javac NomFichier.java", "java NomFichier.java", "compile NomFichier.java", "run NomFichier.java"],
+            correctAnswer: 0
+        },
+        {
+            id: 3,
+            question: "Quelle commande exécute un programme Java compilé ?",
+            options: ["run NomFichier.class", "javac NomFichier.class", "java NomFichier", "execute NomFichier.class"],
+            correctAnswer: 2
+        },
+        {
+            id: 4,
+            question: "Le fichier .class est généré après :",
+            options: ["L'écriture du code", "L'exécution du code", "La compilation du code", "L'importation d'une bibliothèque"],
+            correctAnswer: 2
+        },
+        {
+            id: 5,
+            question: "Lequel de ces outils ne fait pas partie du JDK ?",
+            options: ["javac", "java", "Notepad", "javadoc"],
+            correctAnswer: 2
+        },
+        {
+            id: 6,
+            question: "Le mot-clé public signifie :",
+            options: ["La classe est privée", "La méthode est locale", "Accessible depuis d'autres classes", "Protégé par un mot de passe"],
+            correctAnswer: 2
+        },
+        {
+            id: 7,
+            question: "Quelle est l'extension des fichiers source Java ?",
+            options: [".class", ".java", ".js", ".txt"],
+            correctAnswer: 1
+        },
+        {
+            id: 8,
+            question: "Lequel des suivants est un environnement d'exécution Java ?",
+            options: ["JDK", "JRE", "JVM", "Eclipse"],
+            correctAnswer: 1
+        },
+        {
+            id: 9,
+            question: "JVM signifie :",
+            options: ["Java Variable Manager", "Java Visual Machine", "Java Virtual Machine", "Java Verified Mode"],
+            correctAnswer: 2
+        },
+        {
+            id: 10,
+            question: "Quelle est la sortie du programme : System.out.println(3 + 4); ?",
+            options: ["34", "7", "'7'", "Erreur"],
+            correctAnswer: 1
+        },
+        {
+            id: 11,
+            question: "Quel mot-clé est utilisé pour créer une instance d'un objet ?",
+            options: ["class", "define", "new", "make"],
+            correctAnswer: 2
+        },
+        {
+            id: 12,
+            question: "Quelle est la méthode principale d'un programme Java ?",
+            options: ["start()", "launch()", "main()", "init()"],
+            correctAnswer: 2
+        },
+        {
+            id: 13,
+            question: "Quel package est automatiquement importé dans chaque programme Java ?",
+            options: ["java.util", "java.io", "java.lang", "javax.swing"],
+            correctAnswer: 2
+        },
+        {
+            id: 14,
+            question: "Lequel est un type primitif en Java ?",
+            options: ["String", "Integer", "int", "Boolean"],
+            correctAnswer: 2
+        },
+        {
+            id: 15,
+            question: "Que signifie static dans une méthode ?",
+            options: ["Elle peut changer au cours du temps", "Elle appartient à une instance", "Elle appartient à la classe", "Elle est inaccessible"],
+            correctAnswer: 2
+        },
+        {
+            id: 16,
+            question: "Lequel des éléments suivants permet d'utiliser un tableau ?",
+            options: ["int[] tab = new int[5];", "array tab = new int(5);", "int tab[] = int(5);", "int tab = {1,2,3,4,5};"],
+            correctAnswer: 0
+        },
+        {
+            id: 17,
+            question: "Que fait le mot-clé final ?",
+            options: ["Rend une variable modifiable", "Rend une variable constante", "Supprime une variable", "Ignore une variable"],
+            correctAnswer: 1
+        },
+        {
+            id: 18,
+            question: "Quelle est la portée d'une variable déclarée dans une méthode ?",
+            options: ["Globale", "Locale", "Publique", "Statique"],
+            correctAnswer: 1
+        },
+        {
+            id: 19,
+            question: "Quel est l'outil pour documenter le code Java ?",
+            options: ["javac", "javadoc", "jartool", "jshell"],
+            correctAnswer: 1
+        },
+        {
+            id: 20,
+            question: "Quel est le rôle de la JVM ?",
+            options: ["Compiler du code source Java", "Exécuter du bytecode", "Éditer du code Java", "Générer des fichiers .java"],
+            correctAnswer: 1
+        },
+        {
+            id: 21,
+            question: "Quel mot-clé est utilisé pour définir un package dans un fichier Java ?",
+            options: ["import", "include", "package", "namespace"],
+            correctAnswer: 2
+        },
+        {
+            id: 22,
+            question: "Où doit être placée la déclaration package dans un fichier Java ?",
+            options: ["Après les importations", "À la fin du fichier", "Avant la déclaration de classe", "Tout en haut du fichier"],
+            correctAnswer: 3
+        },
+        {
+            id: 23,
+            question: "Quel est le but principal des packages en Java ?",
+            options: ["Accélérer la compilation", "Organiser les classes et éviter les conflits de noms", "Créer des interfaces graphiques", "Définir des permissions"],
+            correctAnswer: 1
+        },
+        {
+            id: 24,
+            question: "Quelle syntaxe est correcte pour importer une classe MaClasse du package com.exemple ?",
+            options: ["import MaClasse.com.exemple;", "import com.exemple.MaClasse;", "include com.exemple.MaClasse;", "import class com.exemple.MaClasse;"],
+            correctAnswer: 1
+        },
+        {
+            id: 25,
+            question: "Que fait l'instruction import java.util.*; ?",
+            options: ["Importe uniquement la classe util", "Importe tous les sous-packages de java.util", "Importe toutes les classes du package java.util", "Importe les fichiers .class du dossier util"],
+            correctAnswer: 2
+        }
+    ];
+
+    const [qcmAnswers, setQcmAnswers] = useState({});
+    const [showQcmResults, setShowQcmResults] = useState(false);
+
+    const handleQcmAnswer = (questionId, selectedAnswer) => {
+        setQcmAnswers(prev => ({
+            ...prev,
+            [questionId]: selectedAnswer
+        }));
+    };
+
+    const calculateQcmScore = () => {
+        let correct = 0;
+        Object.entries(qcmAnswers).forEach(([questionId, answer]) => {
+            const question = qcmQuestions.find(q => q.id === parseInt(questionId));
+            if (question && answer === question.correctAnswer) {
+                correct++;
+            }
+        });
+        return Math.round((correct / qcmQuestions.length) * 100);
+    };
+
     return (
         <div className="tp-selection-container">
             {!selectedTP ? (
                 <div className="tp-buttons">
-                    <h2>Sélectionnez un TP</h2>
-                    {[1, 2, 3, "3v2"].map(tp => (
+                    {[1, 2, 3, "3v2", "3v3", 4, 5].map(tp => (
                         <button
                             key={tp}
                             onClick={() => setSelectedTP(tp)}
-                            className="tp-button"
+                            className="tp-button tp"
                         >
                             TP {tp}
                         </button>
                     ))}
+                    <button
+                        onClick={() => setSelectedTP("Examen")}
+                        className="tp-button exam"
+                    >
+                        Examen
+                    </button>
+                    <button
+                        onClick={() => setSelectedTP("QCM")}
+                        className="tp-button qcm"
+                    >
+                        QCM
+                    </button>
                 </div>
             ) : (
                 <div className="tp-content">
                     <button 
-                        onClick={handleReset}
                         className="back-button"
+                        onClick={() => setSelectedTP(null)}
                     >
                         Retour
                     </button>
@@ -1689,7 +3202,7 @@ public class Main {
                                                 }}
                                             />
                                         </div>
-                                        <span className="score-text" style={{ color: '#e6e9f0' }}>
+                                        <span className="score-text">
                                             Score: {scores[exercise.id] || 0}%
                                         </span>
                                     </div>
@@ -1754,7 +3267,7 @@ public class Main {
                                                 }}
                                             />
                                         </div>
-                                        <span className="score-text" style={{ color: '#e6e9f0' }}>
+                                        <span className="score-text">
                                             Score: {scores[exercise.id] || 0}%
                                         </span>
                                     </div>
@@ -1819,7 +3332,7 @@ public class Main {
                                                 }}
                                             />
                                         </div>
-                                        <span className="score-text" style={{ color: '#e6e9f0' }}>
+                                        <span className="score-text">
                                             Score: {scores[exercise.id] || 0}%
                                         </span>
                                     </div>
@@ -1839,10 +3352,499 @@ public class Main {
                             {tp3v2Questions.map(exercise => renderMultiFileExercise(exercise))}
                         </div>
                     )}
+                    
+                    {selectedTP === "3v3" && (
+                        <div className="exercises-container">
+                            {tp3v3Questions.map(exercise => renderMultiFileExercise(exercise))}
+                        </div>
+                    )}
+                    
+                    {selectedTP === 4 && (
+                        <div className="exercises-container">
+                            {tp4Questions.map(exercise => (
+                                <div key={exercise.id} className="exercise-card">
+                                    <h3>{exercise.title}</h3>
+                                    <pre className="question-description">{exercise.description}</pre>
+                                    <textarea
+                                        className="code-input"
+                                        value={userCodes[exercise.id] || ''}
+                                        onChange={(e) => handleCodeChange(exercise.id, exercise.id, e.target.value)}
+                                        placeholder="Écrivez votre code ici..."
+                                        rows={10}
+                                    />
+                                    <div className="button-group">
+                                        <button 
+                                            onClick={() => checkCode(exercise.id, exercise.id, userCodes[exercise.id], exercise.expectedFunction)}
+                                            className="submit-button"
+                                        >
+                                            Vérifier
+                                        </button>
+                                        <button 
+                                            onClick={() => setShowSolutions(prev => ({
+                                                ...prev,
+                                                [exercise.id]: !prev[exercise.id]
+                                            }))}
+                                            className={`solution-button ${showSolutions[exercise.id] ? 'active' : ''}`}
+                                        >
+                                            {showSolutions[exercise.id] ? 'Masquer la solution' : 'Voir la solution'}
+                                        </button>
+                                    </div>
+                                    
+                                    {showSolutions[exercise.id] && (
+                                        <div className="solution-container">
+                                            <h4>Solution proposée :</h4>
+                                            <pre className="solution-code">
+                                                {exercise.expectedFunction}
+                                            </pre>
+                                        </div>
+                                    )}
+                                    
+                                    <div className="score-container">
+                                        <div className="progress-bar-container">
+                                            <div 
+                                                className="progress-bar"
+                                                style={{
+                                                    width: `${scores[exercise.id] || 0}%`,
+                                                    backgroundColor: getProgressColor(scores[exercise.id] || 0)
+                                                }}
+                                            />
+                                        </div>
+                                        <span className="score-text">
+                                            Score: {scores[exercise.id] || 0}%
+                                        </span>
+                                    </div>
+                                    
+                                    {feedbacks[exercise.id] && (
+                                        <div className={`feedback ${feedbacks[exercise.id].includes('Excellent') ? 'success' : 'error'}`}>
+                                            {feedbacks[exercise.id]}
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                    
+                    {selectedTP === 5 && (
+                        <div className="exercises-container">
+                            {tp5Questions.map(exercise => (
+                                <div key={exercise.id} className="exercise-card">
+                                    <h3>{exercise.title}</h3>
+                                    <pre className="question-description">{exercise.description}</pre>
+                                    <textarea
+                                        className="code-input"
+                                        value={userCodes[exercise.id] || ''}
+                                        onChange={(e) => handleCodeChange(exercise.id, exercise.id, e.target.value)}
+                                        placeholder="Écrivez votre code ici..."
+                                        rows={10}
+                                    />
+                                    <div className="button-group">
+                                        <button 
+                                            onClick={() => checkCode(exercise.id, exercise.id, userCodes[exercise.id], exercise.expectedFunction)}
+                                            className="submit-button"
+                                        >
+                                            Vérifier
+                                        </button>
+                                        <button 
+                                            onClick={() => setShowSolutions(prev => ({
+                                                ...prev,
+                                                [exercise.id]: !prev[exercise.id]
+                                            }))}
+                                            className={`solution-button ${showSolutions[exercise.id] ? 'active' : ''}`}
+                                        >
+                                            {showSolutions[exercise.id] ? 'Masquer la solution' : 'Voir la solution'}
+                                        </button>
+                                    </div>
+                                    
+                                    {showSolutions[exercise.id] && (
+                                        <div className="solution-container">
+                                            <h4>Solution proposée :</h4>
+                                            <pre className="solution-code">
+                                                {exercise.expectedFunction}
+                                            </pre>
+                                        </div>
+                                    )}
+                                    
+                                    <div className="score-container">
+                                        <div className="progress-bar-container">
+                                            <div 
+                                                className="progress-bar"
+                                                style={{
+                                                    width: `${scores[exercise.id] || 0}%`,
+                                                    backgroundColor: getProgressColor(scores[exercise.id] || 0)
+                                                }}
+                                            />
+                                        </div>
+                                        <span className="score-text">
+                                            Score: {scores[exercise.id] || 0}%
+                                        </span>
+                                    </div>
+                                    
+                                    {feedbacks[exercise.id] && (
+                                        <div className={`feedback ${feedbacks[exercise.id].includes('Excellent') ? 'success' : 'error'}`}>
+                                            {feedbacks[exercise.id]}
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                    
+                    {selectedTP === "Examen" && (
+                        <div className="exercises-container">
+                            <div className="exam-header">
+                                <h2>Examen Java - Gestion des Trains</h2>
+                                <p>Professeur: Abdessamad Belangour</p>
+                                <p>SMI S6</p>
+                            </div>
+                            {examQuestions.map(exercise => (
+                                <div key={exercise.id} className="exercise-card">
+                                    <h3>{exercise.title}</h3>
+                                    <pre className="question-description">{exercise.description}</pre>
+                                    <textarea
+                                        className="code-input"
+                                        value={userCodes[exercise.id] || ''}
+                                        onChange={(e) => handleCodeChange(exercise.id, exercise.id, e.target.value)}
+                                        placeholder="Écrivez votre code ici..."
+                                        rows={10}
+                                    />
+                                    <div className="button-group">
+                                        <button 
+                                            onClick={() => checkCode(exercise.id, exercise.id, userCodes[exercise.id], exercise.expectedFunction)}
+                                            className="submit-button"
+                                        >
+                                            Vérifier
+                                        </button>
+                                        <button 
+                                            onClick={() => setShowSolutions(prev => ({
+                                                ...prev,
+                                                [exercise.id]: !prev[exercise.id]
+                                            }))}
+                                            className={`solution-button ${showSolutions[exercise.id] ? 'active' : ''}`}
+                                        >
+                                            {showSolutions[exercise.id] ? 'Masquer la solution' : 'Voir la solution'}
+                                        </button>
+                                    </div>
+                                    
+                                    {showSolutions[exercise.id] && (
+                                        <div className="solution-container">
+                                            <h4>Solution proposée :</h4>
+                                            <pre className="solution-code">
+                                                {exercise.expectedFunction}
+                                            </pre>
+                                        </div>
+                                    )}
+                                    
+                                    <div className="score-container">
+                                        <div className="progress-bar-container">
+                                            <div 
+                                                className="progress-bar"
+                                                style={{
+                                                    width: `${scores[exercise.id] || 0}%`,
+                                                    backgroundColor: getProgressColor(scores[exercise.id] || 0)
+                                                }}
+                                            />
+                                        </div>
+                                        <span className="score-text">
+                                            Score: {scores[exercise.id] || 0}%
+                                        </span>
+                                    </div>
+                                    
+                                    {feedbacks[exercise.id] && (
+                                        <div className={`feedback ${feedbacks[exercise.id].includes('Excellent') ? 'success' : 'error'}`}>
+                                            {feedbacks[exercise.id]}
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                    
+                    {selectedTP === "QCM" && (
+                        <div className="qcm-container">
+                            <button 
+                                className="retour-button"
+                                onClick={() => setSelectedTP(null)}
+                            >
+                                Retour
+                            </button>
+                            <h2>QCM Java</h2>
+                            <div className="qcm-questions">
+                                {qcmQuestions.map(question => (
+                                    <div key={question.id} className="qcm-question">
+                                        <div className="question-number">Question {question.id}/25</div>
+                                        <h3>{question.question}</h3>
+                                        <div className="qcm-options">
+                                            {question.options.map((option, index) => (
+                                                <label 
+                                                    key={index}
+                                                    className={`qcm-option ${
+                                                        showQcmResults ? 
+                                                            question.correctAnswer === index ? 
+                                                                'correct' : 
+                                                                qcmAnswers[question.id] === index ? 
+                                                                    'incorrect' : 
+                                                                    '' 
+                                                            : 
+                                                            qcmAnswers[question.id] === index ? 
+                                                                'selected' : 
+                                                                ''
+                                                    }`}
+                                                >
+                                                    <input
+                                                        type="radio"
+                                                        name={`question-${question.id}`}
+                                                        value={index}
+                                                        checked={qcmAnswers[question.id] === index}
+                                                        onChange={() => handleQcmAnswer(question.id, index)}
+                                                        disabled={showQcmResults}
+                                                    />
+                                                    {option}
+                                                </label>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="qcm-controls">
+                                {!showQcmResults ? (
+                                    <button 
+                                        onClick={() => setShowQcmResults(true)}
+                                        className="submit-button"
+                                        disabled={Object.keys(qcmAnswers).length === 0}
+                                    >
+                                        Terminer le QCM
+                                    </button>
+                                ) : (
+                                    <div className="qcm-results">
+                                        <h3>Résultats du QCM</h3>
+                                        <div className="score-details">
+                                            <div className="score-item">
+                                                <h4>Score Total</h4>
+                                                <div className="score-value">{calculateQcmScore()}%</div>
+                                            </div>
+                                            <div className="score-item">
+                                                <h4>Questions Correctes</h4>
+                                                <div className="score-value">
+                                                    {Object.entries(qcmAnswers).filter(([questionId, answer]) => {
+                                                        const question = qcmQuestions.find(q => q.id === parseInt(questionId));
+                                                        return question && answer === question.correctAnswer;
+                                                    }).length}
+                                                </div>
+                                            </div>
+                                            <div className="score-item">
+                                                <h4>Questions Répondues</h4>
+                                                <div className="score-value">{Object.keys(qcmAnswers).length}</div>
+                                            </div>
+                                        </div>
+                                        <button 
+                                            onClick={() => {
+                                                setShowQcmResults(false);
+                                                setQcmAnswers({});
+                                            }}
+                                            className="reset-button"
+                                        >
+                                            Recommencer le QCM
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
                 </div>
+            )}
+            
+            {showScrollTop && (
+                <button className="scroll-to-top" onClick={scrollToTop}>
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 4l-8 8h6v8h4v-8h6z"/>
+                    </svg>
+                </button>
             )}
         </div>
     );
+
+    // Add this CSS at the end of your existing CSS
+    const styles = `
+        .qcm-container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        .qcm-questions {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 50px;
+        }
+
+        .qcm-question {
+            margin-bottom: 50px;
+            padding: 30px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .qcm-question h3 {
+            color: #2196f3;
+            font-size: 1.4em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        .qcm-question p {
+            color: #333;
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .qcm-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .qcm-option {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #f8f9fa;
+            font-size: 1.1em;
+        }
+
+        .qcm-option:hover:not(.correct):not(.incorrect) {
+            background-color: #e3f2fd;
+            border-color: #2196f3;
+            transform: translateY(-2px);
+        }
+
+        .qcm-option.selected {
+            background-color: #e3f2fd;
+            border-color: #2196f3;
+            font-weight: 500;
+        }
+
+        .qcm-option.correct {
+            background-color: #c8e6c9;
+            border-color: #4caf50;
+            color: #1b5e20;
+        }
+
+        .qcm-option.incorrect {
+            background-color: #ffcdd2;
+            border-color: #f44336;
+            color: #b71c1c;
+        }
+
+        .qcm-controls {
+            position: sticky;
+            bottom: 20px;
+            background-color: white;
+            padding: 20px;
+            border-top: 2px solid #e0e0e0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            z-index: 100;
+        }
+
+        .submit-button {
+            background-color: #2196f3;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .submit-button:hover {
+            background-color: #1976d2;
+            transform: translateY(-2px);
+        }
+
+        .reset-button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .reset-button:hover {
+            background-color: #d32f2f;
+            transform: translateY(-2px);
+        }
+
+        .qcm-results {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .qcm-results h3 {
+            color: #2196f3;
+            font-size: 1.6em;
+            margin-bottom: 20px;
+        }
+
+        .score-details {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .score-item {
+            background-color: #f5f5f5;
+            padding: 15px 25px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .score-item h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .score-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #2196f3;
+        }
+
+        .question-number {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background-color: #2196f3;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+    `;
 };
 
 export default TPSelection; 
