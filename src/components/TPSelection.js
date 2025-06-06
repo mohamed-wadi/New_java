@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../App.css';
 
 const TPSelection = () => {
@@ -8,7 +7,6 @@ const TPSelection = () => {
     const [feedbacks, setFeedbacks] = useState({});
     const [scores, setScores] = useState({});
     const [showSolutions, setShowSolutions] = useState({});
-    const [selectedFile, setSelectedFile] = useState({});
     const [showScrollTop, setShowScrollTop] = useState(false);
 
     useEffect(() => {
@@ -3116,6 +3114,14 @@ public String toString() {
         return Math.round((correct / qcmQuestions.length) * 100);
     };
 
+    const handleBack = () => {
+        setSelectedTP(null);
+        setUserCodes({});
+        setFeedbacks({});
+        setScores({});
+        setShowSolutions({});
+    };
+
     return (
         <div className="tp-selection-container">
             {!selectedTP ? (
@@ -3146,7 +3152,7 @@ public String toString() {
                 <div className="tp-content">
                     <button 
                         className="back-button"
-                        onClick={() => setSelectedTP(null)}
+                        onClick={handleBack}
                     >
                         Retour
                     </button>
@@ -3662,189 +3668,6 @@ public String toString() {
             )}
         </div>
     );
-
-    // Add this CSS at the end of your existing CSS
-    const styles = `
-        .qcm-container {
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-            font-family: 'Segoe UI', Arial, sans-serif;
-        }
-
-        .qcm-questions {
-            margin-top: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 50px;
-        }
-
-        .qcm-question {
-            margin-bottom: 50px;
-            padding: 30px;
-            border: 2px solid #e0e0e0;
-            border-radius: 15px;
-            background-color: #fff;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            position: relative;
-        }
-
-        .qcm-question h3 {
-            color: #2196f3;
-            font-size: 1.4em;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #e0e0e0;
-            padding-bottom: 10px;
-        }
-
-        .qcm-question p {
-            color: #333;
-            font-size: 1.2em;
-            line-height: 1.6;
-            margin-bottom: 30px;
-        }
-
-        .qcm-options {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin-top: 30px;
-        }
-
-        .qcm-option {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background-color: #f8f9fa;
-            font-size: 1.1em;
-        }
-
-        .qcm-option:hover:not(.correct):not(.incorrect) {
-            background-color: #e3f2fd;
-            border-color: #2196f3;
-            transform: translateY(-2px);
-        }
-
-        .qcm-option.selected {
-            background-color: #e3f2fd;
-            border-color: #2196f3;
-            font-weight: 500;
-        }
-
-        .qcm-option.correct {
-            background-color: #c8e6c9;
-            border-color: #4caf50;
-            color: #1b5e20;
-        }
-
-        .qcm-option.incorrect {
-            background-color: #ffcdd2;
-            border-color: #f44336;
-            color: #b71c1c;
-        }
-
-        .qcm-controls {
-            position: sticky;
-            bottom: 20px;
-            background-color: white;
-            padding: 20px;
-            border-top: 2px solid #e0e0e0;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            z-index: 100;
-        }
-
-        .submit-button {
-            background-color: #2196f3;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.1em;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .submit-button:hover {
-            background-color: #1976d2;
-            transform: translateY(-2px);
-        }
-
-        .reset-button {
-            background-color: #f44336;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.1em;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .reset-button:hover {
-            background-color: #d32f2f;
-            transform: translateY(-2px);
-        }
-
-        .qcm-results {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-
-        .qcm-results h3 {
-            color: #2196f3;
-            font-size: 1.6em;
-            margin-bottom: 20px;
-        }
-
-        .score-details {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-        }
-
-        .score-item {
-            background-color: #f5f5f5;
-            padding: 15px 25px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .score-item h4 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        .score-value {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: #2196f3;
-        }
-
-        .question-number {
-            position: absolute;
-            top: -15px;
-            left: 20px;
-            background-color: #2196f3;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-        }
-    `;
 };
 
 export default TPSelection; 
