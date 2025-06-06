@@ -8,6 +8,7 @@ const TPSelection = () => {
     const [feedbacks, setFeedbacks] = useState({});
     const [scores, setScores] = useState({});
     const [showSolutions, setShowSolutions] = useState({});
+    const [selectedFile, setSelectedFile] = useState({});
 
     const tp1Questions = [
         {
@@ -802,365 +803,726 @@ public class Main {
         }
     ];
 
-    const checkCode = (exerciseId, code, expectedFunction) => {
-        // Ne rien faire si le code est vide
-        if (!code || code.trim() === '') {
-            return;
-        }
+    const tp3v2Questions = [
+        {
+            id: "ex1",
+            title: "Exercice 1 : Organisation en Packages",
+            description: `Objectif : Apprendre à organiser son code avec des packages.
+Énoncé :
+Crée deux packages :
+• ma.univ_casablanca.animaux
+• ma.univ_casablanca.application
+Dans le package ma.univ_casablanca.animaux, crée une classe Animal avec les attributs
+suivants :
+• String nom
+• int age
+Crée une autre classe Chien qui hérite de Animal, avec un attribut supplémentaire String
+race.
+Dans le package ma.univ_casablanca.application, crée une classe Application avec
+une méthode main permettant de créer un objet Chien et d'afficher ses informations.`,
+            files: [
+                {
+                    id: "ex1_animal",
+                    name: "Animal.java",
+                    package: "ma.univ_casablanca.animaux",
+                    expectedCode: `package ma.univ_casablanca.animaux;
 
-        const cleanUserCode = code.toLowerCase().replace(/\s+/g, '');
-        let isCorrect = false;
-        let score = 0;
-        let feedback = {
-            message: '',
-            details: [],
-            score: 0
-        };
+public class Animal {
+    private String nom;
+    private int age;
+    
+    public Animal(String nom, int age) {
+        this.nom = nom;
+        this.age = age;
+    }
+    
+    public String getNom() {
+        return nom;
+    }
+    
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+    
+    public int getAge() {
+        return age;
+    }
+    
+    public void setAge(int age) {
+        this.age = age;
+    }
+}`
+                },
+                {
+                    id: "ex1_chien",
+                    name: "Chien.java",
+                    package: "ma.univ_casablanca.animaux",
+                    expectedCode: `package ma.univ_casablanca.animaux;
 
-        // Fonction utilitaire pour vérifier la présence de patterns
-        const checkPattern = (pattern, description) => {
-            const found = Array.isArray(pattern) 
-                ? pattern.some(p => cleanUserCode.includes(p))
-                : cleanUserCode.includes(pattern);
+public class Chien extends Animal {
+    private String race;
+    
+    public Chien(String nom, int age, String race) {
+        super(nom, age);
+        this.race = race;
+    }
+    
+    public String getRace() {
+        return race;
+    }
+    
+    public void setRace(String race) {
+        this.race = race;
+    }
+    
+    @Override
+    public String toString() {
+        return "Chien{nom='" + getNom() + "', age=" + getAge() + ", race='" + race + "'}";
+    }
+}`
+                },
+                {
+                    id: "ex1_app",
+                    name: "Application.java",
+                    package: "ma.univ_casablanca.application",
+                    expectedCode: `package ma.univ_casablanca.application;
+
+import ma.univ_casablanca.animaux.Chien;
+
+public class Application {
+    public static void main(String[] args) {
+        Chien monChien = new Chien("Rex", 3, "Berger Allemand");
+        System.out.println("Informations du chien :");
+        System.out.println("Nom : " + monChien.getNom());
+        System.out.println("Age : " + monChien.getAge());
+        System.out.println("Race : " + monChien.getRace());
+        System.out.println("ToString : " + monChien.toString());
+    }
+}`
+                }
+            ]
+        },
+        {
+            id: "ex2",
+            title: "Exercice 2 : Héritage et Redéfinition de Méthodes",
+            description: `Objectif : Comprendre l'héritage et la redéfinition de méthodes.
+Énoncé :
+Crée une classe Employe avec :
+• String nom
+• double salaire
+et une méthode :
+• public String getInfos() qui retourne une chaîne de caractères contenant le nom
+et le salaire.
+Crée une classe Manager qui hérite de Employe et ajoute :
+• int nbSubordonnes
+Redéfinis la méthode getInfos() pour qu'elle affiche aussi le nombre de subordonnés.
+Dans la classe main, crée un Manager et un Employe, puis affiche leurs infos.`,
+            files: [
+                {
+                    id: "ex2_employe",
+                    name: "Employe.java",
+                    package: "ma.univ_casablanca.entreprise",
+                    expectedCode: `package ma.univ_casablanca.entreprise;
+
+public class Employe {
+    private String nom;
+    private double salaire;
+    
+    public Employe(String nom, double salaire) {
+        this.nom = nom;
+        this.salaire = salaire;
+    }
+    
+    public String getInfos() {
+        return "Nom: " + nom + ", Salaire: " + salaire + " DH";
+    }
+    
+    // Getters et Setters
+    public String getNom() {
+        return nom;
+    }
+    
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+    
+    public double getSalaire() {
+        return salaire;
+    }
+    
+    public void setSalaire(double salaire) {
+        this.salaire = salaire;
+    }
+}`
+                },
+                {
+                    id: "ex2_manager",
+                    name: "Manager.java",
+                    package: "ma.univ_casablanca.entreprise",
+                    expectedCode: `package ma.univ_casablanca.entreprise;
+
+public class Manager extends Employe {
+    private int nbSubordonnes;
+    
+    public Manager(String nom, double salaire, int nbSubordonnes) {
+        super(nom, salaire);
+        this.nbSubordonnes = nbSubordonnes;
+    }
+    
+    @Override
+    public String getInfos() {
+        return super.getInfos() + ", Nombre de subordonnés: " + nbSubordonnes;
+    }
+    
+    public int getNbSubordonnes() {
+        return nbSubordonnes;
+    }
+    
+    public void setNbSubordonnes(int nbSubordonnes) {
+        this.nbSubordonnes = nbSubordonnes;
+    }
+}`
+                },
+                {
+                    id: "ex2_main",
+                    name: "Main.java",
+                    package: "ma.univ_casablanca.entreprise",
+                    expectedCode: `package ma.univ_casablanca.entreprise;
+
+public class Main {
+    public static void main(String[] args) {
+        Employe employe = new Employe("Ahmed", 8000.0);
+        Manager manager = new Manager("Karim", 15000.0, 5);
+        
+        System.out.println("Informations de l'employé:");
+        System.out.println(employe.getInfos());
+        
+        System.out.println("\\nInformations du manager:");
+        System.out.println(manager.getInfos());
+    }
+}`
+                }
+            ]
+        },
+        {
+            id: "ex3",
+            title: "Exercice 3 : Redéfinition des Méthodes de la classe Object",
+            description: `Objectif : Apprendre à redéfinir toString(), equals() et hashCode().
+Énoncé :
+Crée une classe Etudiant avec les attributs :
+• String nom
+• String cne
+• int annee
+Redéfinis les méthodes suivantes :
+• toString() pour un affichage lisible de l'objet
+• equals(Object obj) pour comparer deux Etudiant sur la base du nom et du CNE
+• hashCode() de manière cohérente avec equals
+Teste ces méthodes dans un main.`,
+            files: [
+                {
+                    id: "ex3_etudiant",
+                    name: "Etudiant.java",
+                    package: "ma.univ_casablanca.scolarite",
+                    expectedCode: `package ma.univ_casablanca.scolarite;
+
+import java.util.Objects;
+
+public class Etudiant {
+    private String nom;
+    private String cne;
+    private int annee;
+    
+    public Etudiant(String nom, String cne, int annee) {
+        this.nom = nom;
+        this.cne = cne;
+        this.annee = annee;
+    }
+    
+    @Override
+    public String toString() {
+        return "Etudiant{" +
+               "nom='" + nom + "'" +
+               ", cne='" + cne + "'" +
+               ", annee=" + annee +
+               '}';
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Etudiant etudiant = (Etudiant) obj;
+        return Objects.equals(nom, etudiant.nom) &&
+               Objects.equals(cne, etudiant.cne);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(nom, cne);
+    }
+    
+    // Getters et Setters
+    public String getNom() {
+        return nom;
+    }
+    
+    public void setNom(String nom) {
+        this.nom = nom;
+    }
+    
+    public String getCne() {
+        return cne;
+    }
+    
+    public void setCne(String cne) {
+        this.cne = cne;
+    }
+    
+    public int getAnnee() {
+        return annee;
+    }
+    
+    public void setAnnee(int annee) {
+        this.annee = annee;
+    }
+}`
+                },
+                {
+                    id: "ex3_main",
+                    name: "Main.java",
+                    package: "ma.univ_casablanca.scolarite",
+                    expectedCode: `package ma.univ_casablanca.scolarite;
+
+public class Main {
+    public static void main(String[] args) {
+        Etudiant etudiant1 = new Etudiant("Mohamed", "P123456", 2);
+        Etudiant etudiant2 = new Etudiant("Mohamed", "P123456", 3);
+        Etudiant etudiant3 = new Etudiant("Ahmed", "P123456", 2);
+        
+        // Test toString()
+        System.out.println("Test toString():");
+        System.out.println(etudiant1);
+        
+        // Test equals()
+        System.out.println("\\nTest equals():");
+        System.out.println("etudiant1 equals etudiant2: " + etudiant1.equals(etudiant2));
+        System.out.println("etudiant1 equals etudiant3: " + etudiant1.equals(etudiant3));
+        
+        // Test hashCode()
+        System.out.println("\\nTest hashCode():");
+        System.out.println("etudiant1 hashCode: " + etudiant1.hashCode());
+        System.out.println("etudiant2 hashCode: " + etudiant2.hashCode());
+        System.out.println("etudiant3 hashCode: " + etudiant3.hashCode());
+    }
+}`
+                }
+            ]
+        },
+        {
+            id: "ex4",
+            title: "Exercice 4 : Utilisation de instanceof dans un contexte polymorphe",
+            description: `Objectif : Comprendre le polymorphisme et l'utilisation de instanceof.
+Énoncé :
+Crée une classe Utilisateur avec une méthode afficherType().
+Crée deux sous-classes :
+• Administrateur
+• Professeur
+Dans une classe de test, crée une liste de Utilisateur contenant des instances de
+Administrateur et de Professeur.
+Parcours la liste et utilise instanceof pour :
+• Identifier le type de chaque utilisateur
+• Afficher un message spécifique selon le type`,
+            files: [
+                {
+                    id: "ex4_utilisateur",
+                    name: "Utilisateur.java",
+                    package: "ma.univ_casablanca.users",
+                    expectedCode: `package ma.univ_casablanca.users;
+
+public class Utilisateur {
+    private String nom;
+    
+    public Utilisateur(String nom) {
+        this.nom = nom;
+    }
+    
+    public void afficherType() {
+        System.out.println("Je suis un utilisateur standard");
+    }
+    
+    public String getNom() {
+        return nom;
+    }
+}`
+                },
+                {
+                    id: "ex4_administrateur",
+                    name: "Administrateur.java",
+                    package: "ma.univ_casablanca.users",
+                    expectedCode: `package ma.univ_casablanca.users;
+
+public class Administrateur extends Utilisateur {
+    private String niveau;
+    
+    public Administrateur(String nom, String niveau) {
+        super(nom);
+        this.niveau = niveau;
+    }
+    
+    @Override
+    public void afficherType() {
+        System.out.println("Je suis un administrateur de niveau " + niveau);
+    }
+}`
+                },
+                {
+                    id: "ex4_professeur",
+                    name: "Professeur.java",
+                    package: "ma.univ_casablanca.users",
+                    expectedCode: `package ma.univ_casablanca.users;
+
+public class Professeur extends Utilisateur {
+    private String matiere;
+    
+    public Professeur(String nom, String matiere) {
+        super(nom);
+        this.matiere = matiere;
+    }
+    
+    @Override
+    public void afficherType() {
+        System.out.println("Je suis un professeur de " + matiere);
+    }
+}`
+                },
+                {
+                    id: "ex4_main",
+                    name: "Main.java",
+                    package: "ma.univ_casablanca.users",
+                    expectedCode: `package ma.univ_casablanca.users;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+        List<Utilisateur> utilisateurs = new ArrayList<>();
+        
+        utilisateurs.add(new Administrateur("Karim", "Super Admin"));
+        utilisateurs.add(new Professeur("Ahmed", "Mathématiques"));
+        utilisateurs.add(new Professeur("Fatima", "Physique"));
+        utilisateurs.add(new Administrateur("Sara", "Admin"));
+        
+        for (Utilisateur user : utilisateurs) {
+            System.out.println("\\nUtilisateur: " + user.getNom());
+            user.afficherType();
             
-            feedback.details.push({
-                check: description,
-                passed: found,
-                symbol: found ? '✓' : '✗'
-            });
-            
-            return found;
-        };
-
-        switch (exerciseId) {
-            case 1:
-                feedback.details = [];
-                score = 0;
-                
-                // Vérification de la signature
-                if (checkPattern('publicstaticint[]saisietableau()', 'Signature de la méthode')) score += 20;
-                
-                // Vérification de l'utilisation du Scanner
-                if (checkPattern('scanner=newscanner(system.in)', 'Utilisation de Scanner')) score += 20;
-                
-                // Vérification de la création du tableau
-                if (checkPattern('newint[', 'Création du tableau')) score += 20;
-                
-                // Vérification de la boucle
-                if (checkPattern(['for(', 'while('], 'Boucle de saisie')) score += 20;
-                
-                // Vérification du return
-                if (checkPattern('return', 'Return du tableau')) score += 20;
-
-                feedback.score = score;
-                isCorrect = score >= 80;
-                break;
-
-            case 2:
-                const ex2Requirements = {
-                    signature: 'publicstaticvoidaffichetableau(int[]t)',
-                    loop: ['for(', 'while('],
-                    print: ['system.out.print', 'system.out.println'],
-                    array: 't[i]'
-                };
-
-                isCorrect = Object.entries(ex2Requirements).every(([key, value]) => {
-                    if (Array.isArray(value)) {
-                        return value.some(v => cleanUserCode.includes(v));
-                    }
-                    return cleanUserCode.includes(value);
-                });
-
-                feedback.score = isCorrect ? 100 : 0;
-                feedback.details.push({
-                    check: 'Vérifiez que vous avez bien :\n' +
-                        '- La bonne signature de méthode (public static void afficheTableau(int[] t))\n' +
-                        '- Une boucle pour parcourir le tableau\n' +
-                        '- Utilisation de System.out.print ou println\n' +
-                        '- Accès aux éléments du tableau avec t[i]',
-                    passed: isCorrect,
-                    symbol: isCorrect ? '✓' : '✗'
-                });
-                break;
-
-            case 3:
-                feedback.details = [];
-                score = 0;
-
-                // Vérification de la fonction Minimum
-                if (checkPattern('publicstaticintminimum(int[]t)', 'Signature de Minimum()')) score += 15;
-                
-                // Vérification de la gestion des cas limites
-                if (checkPattern(['t==null', 't.length==0', 'throw'], 'Gestion des cas limites')) score += 15;
-                
-                // Vérification de l'initialisation
-                if (checkPattern(['min=t[0]', 'int min=t[0]'], 'Initialisation du minimum')) score += 15;
-                
-                // Vérification de la boucle
-                if (checkPattern(['for(', 'while('], 'Boucle de parcours')) score += 15;
-                
-                // Vérification des comparaisons
-                if (checkPattern(['if(t[i]<min)', 'if(t[i]<=min)'], 'Comparaison des éléments')) score += 15;
-                
-                // Vérification du return
-                if (checkPattern('returnmin', 'Return du minimum')) score += 15;
-                
-                // Vérification de la fonction de test
-                const hasTestFunction = checkPattern('publicstaticvoidminimumtest()', 'Fonction de test');
-                if (hasTestFunction) score += 10;
-
-                feedback.score = score;
-                isCorrect = score >= 80;
-                break;
-
-            case 4:
-                feedback.details = [];
-                score = 0;
-
-                // Vérification de la signature
-                if (checkPattern('publicstaticintoccurences(intcible,int[]t)', 'Signature de la fonction')) score += 20;
-                
-                // Vérification de la boucle
-                if (checkPattern(['for(', 'while('], 'Boucle de parcours')) score += 20;
-                
-                // Vérification du compteur
-                if (checkPattern(['count++', 'count=count+1', 'count+=1'], 'Compteur d\'occurrences')) score += 20;
-                
-                // Vérification du return
-                if (checkPattern('return', 'Return du résultat')) score += 20;
-                
-                // Vérification de la fonction de test
-                if (checkPattern('publicstaticvoidoccurencestest()', 'Fonction de test')) score += 20;
-
-                feedback.score = score;
-                isCorrect = score >= 80;
-                break;
-
-            case 5:
-                feedback.details = [];
-                score = 0;
-
-                // Vérification de la signature
-                if (checkPattern('publicstaticintchercher(intnombre,int[]t)', 'Signature de la fonction')) score += 20;
-                
-                // Vérification de la boucle
-                if (checkPattern(['for(', 'while('], 'Boucle de parcours')) score += 20;
-                
-                // Vérification de la comparaison
-                if (checkPattern('==', 'Comparaison des éléments')) score += 20;
-                
-                // Vérification du return
-                if (checkPattern(['return-1', 'returni'], 'Return de l\'index ou -1')) score += 20;
-                
-                // Vérification de la fonction de test
-                if (checkPattern('publicstaticvoidcherchertest()', 'Fonction de test')) score += 20;
-
-                feedback.score = score;
-                isCorrect = score >= 80;
-                break;
-
-            case 6:
-                feedback.details = [];
-                score = 0;
-
-                // Vérification de la signature
-                if (checkPattern('publicstaticint[]tabimpairs(int[]t)', 'Signature de la fonction')) score += 20;
-                
-                // Vérification du modulo
-                if (checkPattern('%2', 'Vérification des nombres impairs')) score += 20;
-                
-                // Vérification de la création du tableau
-                if (checkPattern('newint[', 'Création du nouveau tableau')) score += 20;
-                
-                // Vérification de la boucle
-                if (checkPattern(['for(', 'while('], 'Boucle de parcours')) score += 20;
-                
-                // Vérification de la fonction de test
-                if (checkPattern('publicstaticvoidtabimpairstest()', 'Fonction de test')) score += 20;
-
-                feedback.score = score;
-                isCorrect = score >= 80;
-                break;
-
-            case 7:
-                feedback.details = [];
-                score = 0;
-
-                // Vérification de la signature
-                if (checkPattern('publicstaticvoidtriselection(int[]t)', 'Signature de la fonction')) score += 20;
-                
-                // Vérification des boucles imbriquées
-                if (checkPattern(['for(', 'while('], 'Boucles de tri')) score += 20;
-                
-                // Vérification de l'échange
-                if (checkPattern(['temp=', 'swap'], 'Échange des éléments')) score += 20;
-                
-                // Vérification des comparaisons
-                if (checkPattern(['<', '>'], 'Comparaisons pour le tri')) score += 20;
-                
-                // Vérification de la fonction de test
-                if (checkPattern('publicstaticvoidtriselectiontest()', 'Fonction de test')) score += 20;
-
-                feedback.score = score;
-                isCorrect = score >= 80;
-                break;
-
-            // TP3 Exercices
-            case 8: // Voiture (TP3 Ex1)
-                feedback.details = [];
-                score = 0;
-
-                // Vérification de la classe et des attributs privés
-                if (checkPattern('publicclassvoiture', 'Déclaration de la classe')) score += 10;
-                if (checkPattern(['privatestringmarque', 'privatestring marque'], 'Attribut marque privé')) score += 10;
-                if (checkPattern(['privatestringmodele', 'privatestring modele'], 'Attribut modele privé')) score += 10;
-                if (checkPattern(['privateintannee', 'privateint annee'], 'Attribut annee privé')) score += 10;
-
-                // Vérification des getters
-                if (checkPattern('publicstringgetmarque()', 'Getter pour marque')) score += 10;
-                if (checkPattern('publicstringgetmodele()', 'Getter pour modele')) score += 10;
-                if (checkPattern('publicintgetannee()', 'Getter pour annee')) score += 10;
-
-                // Vérification des setters
-                if (checkPattern('publicvoidsetmarque(stringmarque)', 'Setter pour marque')) score += 10;
-                if (checkPattern('publicvoidsetmodele(stringmodele)', 'Setter pour modele')) score += 10;
-                if (checkPattern('publicvoidsetannee(intannee)', 'Setter pour annee')) score += 10;
-
-                feedback.score = score;
-                isCorrect = score >= 80;
-                break;
-
-            case 9: // Livre (TP3 Ex2)
-                feedback.details = [];
-                score = 0;
-
-                // Vérification des attributs
-                if (checkPattern(['privatestringtitre', 'privatestring titre'], 'Attribut titre')) score += 10;
-                if (checkPattern(['privatestringauteur', 'privatestring auteur'], 'Attribut auteur')) score += 10;
-                if (checkPattern(['privateintanneepublication', 'privateint anneepublication'], 'Attribut anneePublication')) score += 10;
-
-                // Vérification des constructeurs
-                if (checkPattern('public livre(stringtitre,stringauteur,intanneepublication)', 'Constructeur complet')) score += 20;
-                if (checkPattern('public livre(stringtitre,stringauteur)', 'Constructeur avec titre et auteur')) score += 20;
-                if (checkPattern('public livre()', 'Constructeur par défaut')) score += 20;
-
-                // Vérification de l'initialisation par défaut
-                if (checkPattern(['this.anneepublication=2020', 'anneepublication=2020'], 'Année par défaut 2020')) score += 10;
-
-                feedback.score = score;
-                isCorrect = score >= 80;
-                break;
-
-            case 10: // CompteBancaire (TP3 Ex3)
-                feedback.details = [];
-                score = 0;
-
-                // Vérification des attributs et méthodes de base
-                if (checkPattern(['privatestringnumerocompte', 'privatestring numerocompte'], 'Attribut numeroCompte')) score += 10;
-                if (checkPattern(['privatedoublesolde', 'private double solde'], 'Attribut solde')) score += 10;
-
-                // Vérification des getters/setters
-                if (checkPattern('publicdoublegetsolde()', 'Getter pour solde')) score += 10;
-                if (checkPattern('if(solde>=0)', 'Vérification solde positif')) score += 15;
-
-                // Vérification des méthodes de transaction
-                if (checkPattern('publicvoiddeposer(doublemontant)', 'Méthode deposer')) score += 15;
-                if (checkPattern('if(montant>0)', 'Vérification montant positif')) score += 15;
-                if (checkPattern('if(montant>0&&this.solde>=montant)', 'Vérification solde suffisant')) score += 15;
-                if (checkPattern('this.solde-=montant', 'Mise à jour du solde')) score += 10;
-
-                feedback.score = score;
-                isCorrect = score >= 80;
-                break;
-
-            case 11: // Utilisateur (TP3 Ex4)
-                feedback.details = [];
-                score = 0;
-
-                // Vérification des attributs privés
-                if (checkPattern(['privatestringidentifiant', 'privatestring identifiant'], 'Attribut identifiant privé')) score += 15;
-                if (checkPattern(['privatestringmotdepasse', 'privatestring motdepasse'], 'Attribut motDePasse privé')) score += 15;
-
-                // Vérification du setter sécurisé
-                if (checkPattern('if(motdepasse!=null&&motdepasse.length()>=8)', 'Vérification longueur mot de passe')) score += 25;
-                if (checkPattern('return false', 'Gestion cas d\'erreur')) score += 15;
-
-                // Vérification de la méthode d'affichage
-                if (checkPattern('publicvoidafficherinfos()', 'Méthode afficherInfos')) score += 15;
-                if (checkPattern('system.out.println("identifiant:"+identifiant)', 'Affichage sécurisé')) score += 15;
-
-                feedback.score = score;
-                isCorrect = score >= 80;
-                break;
-
-            case 12: // Rectangle (TP3 Ex5)
-                feedback.details = [];
-                score = 0;
-
-                // Vérification des attributs
-                if (checkPattern(['privatedoublelongueur', 'private double longueur'], 'Attribut longueur')) score += 15;
-                if (checkPattern(['privatedoublelargeur', 'private double largeur'], 'Attribut largeur')) score += 15;
-
-                // Vérification des méthodes de calcul
-                if (checkPattern('publicdoublecalculersurface()', 'Méthode calculerSurface de base')) score += 20;
-                if (checkPattern('return longueur*largeur', 'Calcul de la surface')) score += 20;
-                if (checkPattern('publicdoublecalculersurface(doublefacteur)', 'Surcharge de calculerSurface')) score += 15;
-                if (checkPattern('returncalculersurface()*facteur', 'Utilisation du facteur')) score += 15;
-
-                feedback.score = score;
-                isCorrect = score >= 80;
-                break;
-
-            default:
-                feedback.details = [];
-                const cleanExpectedCode = expectedFunction.toLowerCase().replace(/\s+/g, '');
-                isCorrect = cleanUserCode.includes(cleanExpectedCode);
-                feedback.score = isCorrect ? 100 : 0;
-                feedback.details.push({
-                    check: 'Code correspond à la solution attendue',
-                    passed: isCorrect,
-                    symbol: isCorrect ? '✓' : '✗'
-                });
-                break;
+            if (user instanceof Administrateur) {
+                System.out.println("C'est un administrateur");
+            } else if (user instanceof Professeur) {
+                System.out.println("C'est un professeur");
+            }
         }
+    }
+}`
+                }
+            ]
+        },
+        {
+            id: "ex5",
+            title: "Exercice 5 : Mini-Application de Gestion d'un Zoo Marocain",
+            description: `Objectif : Réunir tous les concepts dans un projet cohérent.
+Énoncé :
+Crée un mini-système de gestion d'animaux d'un zoo au Maroc :
 
-        // Construction du message de feedback
-        feedback.message = isCorrect 
-            ? `Excellent! Votre code a obtenu un score de ${feedback.score}%. Il contient tous les éléments essentiels.`
-            : `Votre code a obtenu un score de ${feedback.score}%. Voici les points à améliorer:\n${
-                feedback.details
-                    .filter(d => !d.passed)
-                    .map(d => `${d.symbol} ${d.check}`)
-                    .join('\n')
-            }`;
+1. Package ma.univ_casablanca.zoo.animaux :
+o Classe Animal (nom, age) avec toString(), equals(), hashCode()
+o Sous-classes : Lion, Elephant, Autruche avec redéfinition de toString()
+2. Package ma.univ_casablanca.zoo.gestion :
+o Classe Zoo qui contient une liste d'Animal
+o Méthodes :
+▪ ajouterAnimal(Animal a)
+▪ afficherAnimaux()
+▪ afficherAnimauxParType() qui utilise instanceof
+3. Classe Main dans ma.univ_casablanca.zoo.app pour tester le tout.`,
+            files: [
+                {
+                    id: "ex5_animal",
+                    name: "Animal.java",
+                    package: "ma.univ_casablanca.zoo.animaux",
+                    expectedCode: `package ma.univ_casablanca.zoo.animaux;
 
-        // Mettre à jour le score
-        setScores(prev => ({
+import java.util.Objects;
+
+public class Animal {
+    private String nom;
+    private int age;
+    
+    public Animal(String nom, int age) {
+        this.nom = nom;
+        this.age = age;
+    }
+    
+    @Override
+    public String toString() {
+        return "Animal{nom='" + nom + "', age=" + age + "}";
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Animal animal = (Animal) obj;
+        return age == animal.age && Objects.equals(nom, animal.nom);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(nom, age);
+    }
+    
+    public String getNom() {
+        return nom;
+    }
+    
+    public int getAge() {
+        return age;
+    }
+}`
+                },
+                {
+                    id: "ex5_lion",
+                    name: "Lion.java",
+                    package: "ma.univ_casablanca.zoo.animaux",
+                    expectedCode: `package ma.univ_casablanca.zoo.animaux;
+
+public class Lion extends Animal {
+    private String origine;
+    
+    public Lion(String nom, int age, String origine) {
+        super(nom, age);
+        this.origine = origine;
+    }
+    
+    @Override
+    public String toString() {
+        return "Lion{nom='" + getNom() + "', age=" + getAge() + ", origine='" + origine + "'}";
+    }
+}`
+                },
+                {
+                    id: "ex5_elephant",
+                    name: "Elephant.java",
+                    package: "ma.univ_casablanca.zoo.animaux",
+                    expectedCode: `package ma.univ_casablanca.zoo.animaux;
+
+public class Elephant extends Animal {
+    private double poids;
+    
+    public Elephant(String nom, int age, double poids) {
+        super(nom, age);
+        this.poids = poids;
+    }
+    
+    @Override
+    public String toString() {
+        return "Elephant{nom='" + getNom() + "', age=" + getAge() + ", poids=" + poids + "kg}";
+    }
+}`
+                },
+                {
+                    id: "ex5_autruche",
+                    name: "Autruche.java",
+                    package: "ma.univ_casablanca.zoo.animaux",
+                    expectedCode: `package ma.univ_casablanca.zoo.animaux;
+
+public class Autruche extends Animal {
+    private double hauteur;
+    
+    public Autruche(String nom, int age, double hauteur) {
+        super(nom, age);
+        this.hauteur = hauteur;
+    }
+    
+    @Override
+    public String toString() {
+        return "Autruche{nom='" + getNom() + "', age=" + getAge() + ", hauteur=" + hauteur + "m}";
+    }
+}`
+                },
+                {
+                    id: "ex5_zoo",
+                    name: "Zoo.java",
+                    package: "ma.univ_casablanca.zoo.gestion",
+                    expectedCode: `package ma.univ_casablanca.zoo.gestion;
+
+import ma.univ_casablanca.zoo.animaux.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Zoo {
+    private List<Animal> animaux;
+    
+    public Zoo() {
+        this.animaux = new ArrayList<>();
+    }
+    
+    public void ajouterAnimal(Animal a) {
+        animaux.add(a);
+        System.out.println("Animal ajouté: " + a.getNom());
+    }
+    
+    public void afficherAnimaux() {
+        System.out.println("Liste des animaux du zoo:");
+        for (Animal animal : animaux) {
+            System.out.println(animal);
+        }
+    }
+    
+    public void afficherAnimauxParType() {
+        System.out.println("\\nListe des animaux par type:");
+        
+        System.out.println("\\nLions:");
+        for (Animal animal : animaux) {
+            if (animal instanceof Lion) {
+                System.out.println(animal);
+            }
+        }
+        
+        System.out.println("\\nÉléphants:");
+        for (Animal animal : animaux) {
+            if (animal instanceof Elephant) {
+                System.out.println(animal);
+            }
+        }
+        
+        System.out.println("\\nAutruches:");
+        for (Animal animal : animaux) {
+            if (animal instanceof Autruche) {
+                System.out.println(animal);
+            }
+        }
+    }
+}`
+                },
+                {
+                    id: "ex5_main",
+                    name: "Main.java",
+                    package: "ma.univ_casablanca.zoo.app",
+                    expectedCode: `package ma.univ_casablanca.zoo.app;
+
+import ma.univ_casablanca.zoo.animaux.*;
+import ma.univ_casablanca.zoo.gestion.Zoo;
+
+public class Main {
+    public static void main(String[] args) {
+        Zoo zoo = new Zoo();
+        
+        // Ajout des animaux
+        zoo.ajouterAnimal(new Lion("Simba", 5, "Atlas"));
+        zoo.ajouterAnimal(new Elephant("Dumbo", 8, 2500.5));
+        zoo.ajouterAnimal(new Autruche("Speedy", 3, 2.1));
+        zoo.ajouterAnimal(new Lion("Mufasa", 10, "Sahara"));
+        
+        // Affichage de tous les animaux
+        System.out.println("\\nAffichage de tous les animaux:");
+        zoo.afficherAnimaux();
+        
+        // Affichage par type
+        System.out.println("\\nAffichage par type:");
+        zoo.afficherAnimauxParType();
+    }
+}`
+                }
+            ]
+        }
+    ];
+
+    const handleCodeChange = (exerciseId, fileId, newCode) => {
+        setUserCodes(prev => ({
             ...prev,
-            [exerciseId]: feedback.score
-        }));
-
-        setFeedbacks(prev => ({
-            ...prev,
-            [exerciseId]: feedback.message
+            [fileId]: newCode
         }));
     };
 
-    const handleCodeChange = (exerciseId, newCode) => {
-        setUserCodes(prev => ({
-            ...prev,
-            [exerciseId]: newCode
-        }));
+    const checkCode = (exerciseId, fileId, userCode, expectedCode) => {
+        if (!userCode || userCode.trim() === '') {
+            setFeedbacks(prev => ({
+                ...prev,
+                [fileId]: "Le code ne peut pas être vide."
+            }));
+            setScores(prev => ({
+                ...prev,
+                [fileId]: 0
+            }));
+            return;
+        }
+
+        const cleanUserCode = userCode.toLowerCase().replace(/\s+/g, '');
+        const cleanExpectedCode = expectedCode.toLowerCase().replace(/\s+/g, '');
         
-        // Réinitialiser le score et le feedback lors de la modification du code
+        let score = 0;
+        let feedback = "";
+
+        if (cleanUserCode === cleanExpectedCode) {
+            score = 100;
+            feedback = "Excellent ! Votre code est parfait.";
+        } else if (cleanUserCode.includes(cleanExpectedCode)) {
+            score = 90;
+            feedback = "Très bien ! Votre code contient tous les éléments attendus.";
+        } else {
+            const similarities = calculateSimilarity(cleanUserCode, cleanExpectedCode);
+            score = Math.round(similarities * 100);
+            feedback = score > 50 
+                ? "Bien ! Votre code est sur la bonne voie mais peut être amélioré."
+                : "Attention, votre code semble différent de la solution attendue.";
+        }
+
         setScores(prev => ({
             ...prev,
-            [exerciseId]: undefined
+            [fileId]: score
         }));
         setFeedbacks(prev => ({
             ...prev,
-            [exerciseId]: undefined
+            [fileId]: feedback
         }));
+    };
+
+    const calculateSimilarity = (str1, str2) => {
+        const longer = str1.length > str2.length ? str1 : str2;
+        const shorter = str1.length > str2.length ? str2 : str1;
+        
+        if (longer.length === 0) {
+            return 1.0;
+        }
+        
+        return (longer.length - editDistance(longer, shorter)) / longer.length;
+    };
+
+    const editDistance = (str1, str2) => {
+        const matrix = Array(str2.length + 1).fill().map(() => Array(str1.length + 1).fill(0));
+        
+        for (let i = 0; i <= str1.length; i++) {
+            matrix[0][i] = i;
+        }
+        for (let j = 0; j <= str2.length; j++) {
+            matrix[j][0] = j;
+        }
+        
+        for (let j = 1; j <= str2.length; j++) {
+            for (let i = 1; i <= str1.length; i++) {
+                if (str1[i-1] === str2[j-1]) {
+                    matrix[j][i] = matrix[j-1][i-1];
+                } else {
+                    matrix[j][i] = Math.min(
+                        matrix[j-1][i-1] + 1,
+                        matrix[j][i-1] + 1,
+                        matrix[j-1][i] + 1
+                    );
+                }
+            }
+        }
+        return matrix[str2.length][str1.length];
     };
 
     const handleReset = () => {
@@ -1169,13 +1531,87 @@ public class Main {
         setFeedbacks({});
         setScores({});
         setShowSolutions({});
+        setSelectedFile({});
     };
 
-    // Fonction pour déterminer la couleur de la barre de progression
     const getProgressColor = (score) => {
-        if (score >= 80) return '#4CAF50'; // Vert
-        if (score >= 60) return '#FFA726'; // Orange
-        return '#f44336'; // Rouge
+        if (score >= 80) return '#4CAF50';
+        if (score >= 60) return '#FFC107';
+        return '#f44336';
+    };
+
+    const renderMultiFileExercise = (exercise) => {
+        return (
+            <div className="exercise-card">
+                <h3>{exercise.title}</h3>
+                <pre className="question-description">
+                    {exercise.description}
+                </pre>
+                
+                {exercise.files.map(file => (
+                    <div key={file.id} className="package-section">
+                        <h4>Package: {file.package}</h4>
+                        <div className="file-header">
+                            <span className="file-name">{file.name}</span>
+                        </div>
+                        <textarea
+                            className="code-input"
+                            value={userCodes[file.id] || ''}
+                            onChange={(e) => handleCodeChange(exercise.id, file.id, e.target.value)}
+                            placeholder={`Écrivez votre code pour ${file.name} ici...`}
+                            rows={10}
+                        />
+                        <div className="button-group">
+                            <button 
+                                onClick={() => checkCode(exercise.id, file.id, userCodes[file.id], file.expectedCode)}
+                                className="submit-button"
+                            >
+                                Vérifier
+                            </button>
+                            <button 
+                                onClick={() => setShowSolutions(prev => ({
+                                    ...prev,
+                                    [file.id]: !prev[file.id]
+                                }))}
+                                className={`solution-button ${showSolutions[file.id] ? 'active' : ''}`}
+                            >
+                                {showSolutions[file.id] ? 'Masquer la solution' : 'Voir la solution'}
+                            </button>
+                        </div>
+                        
+                        {showSolutions[file.id] && (
+                            <div className="solution-container">
+                                <h4>Solution proposée :</h4>
+                                <pre className="solution-code">
+                                    {file.expectedCode}
+                                </pre>
+                            </div>
+                        )}
+                        
+                        <div className="score-container">
+                            <div className="progress-bar-container">
+                                <div 
+                                    className="progress-bar"
+                                    style={{
+                                        width: `${scores[file.id] || 0}%`,
+                                        backgroundColor: getProgressColor(scores[file.id] || 0)
+                                    }}
+                                />
+                            </div>
+                            <span className="score-text">
+                                Score: {scores[file.id] || 0}%
+                            </span>
+                        </div>
+                        
+                        {feedbacks[file.id] && (
+                            <div className={`feedback ${feedbacks[file.id].includes('Excellent') ? 'success' : 'error'}`}>
+                                <pre>{feedbacks[file.id]}</pre>
+                            </div>
+                        )}
+                    </div>
+                ))}
+            </div>
+        );
     };
 
     return (
@@ -1183,7 +1619,7 @@ public class Main {
             {!selectedTP ? (
                 <div className="tp-buttons">
                     <h2>Sélectionnez un TP</h2>
-                    {[1, 2, 3].map(tp => (
+                    {[1, 2, 3, "3v2"].map(tp => (
                         <button
                             key={tp}
                             onClick={() => setSelectedTP(tp)}
@@ -1202,24 +1638,23 @@ public class Main {
                         Retour
                     </button>
                     <h2>TP {selectedTP}</h2>
+                    
                     {selectedTP === 1 && (
                         <div className="exercises-container">
-                            {tp1Questions.map(question => (
-                                <div key={question.id} className="exercise-card">
-                                    <h3>{question.title}</h3>
-                                    <pre className="question-description">
-                                        {question.description}
-                                    </pre>
+                            {tp1Questions.map(exercise => (
+                                <div key={exercise.id} className="exercise-card">
+                                    <h3>{exercise.title}</h3>
+                                    <pre className="question-description">{exercise.description}</pre>
                                     <textarea
                                         className="code-input"
-                                        value={userCodes[question.id] || ''}
-                                        onChange={(e) => handleCodeChange(question.id, e.target.value)}
+                                        value={userCodes[exercise.id] || ''}
+                                        onChange={(e) => handleCodeChange(exercise.id, exercise.id, e.target.value)}
                                         placeholder="Écrivez votre code ici..."
                                         rows={10}
                                     />
                                     <div className="button-group">
                                         <button 
-                                            onClick={() => checkCode(question.id, userCodes[question.id] || '', question.expectedFunction)}
+                                            onClick={() => checkCode(exercise.id, exercise.id, userCodes[exercise.id], exercise.expectedFunction)}
                                             className="submit-button"
                                         >
                                             Vérifier
@@ -1227,64 +1662,64 @@ public class Main {
                                         <button 
                                             onClick={() => setShowSolutions(prev => ({
                                                 ...prev,
-                                                [question.id]: !prev[question.id]
+                                                [exercise.id]: !prev[exercise.id]
                                             }))}
-                                            className={`solution-button ${showSolutions[question.id] ? 'active' : ''}`}
+                                            className={`solution-button ${showSolutions[exercise.id] ? 'active' : ''}`}
                                         >
-                                            {showSolutions[question.id] ? 'Masquer la solution' : 'Voir la solution'}
+                                            {showSolutions[exercise.id] ? 'Masquer la solution' : 'Voir la solution'}
                                         </button>
                                     </div>
-                                    {showSolutions[question.id] && (
+                                    
+                                    {showSolutions[exercise.id] && (
                                         <div className="solution-container">
                                             <h4>Solution proposée :</h4>
                                             <pre className="solution-code">
-                                                {question.expectedFunction}
+                                                {exercise.expectedFunction}
                                             </pre>
                                         </div>
                                     )}
-                                    {scores[question.id] !== undefined && (
-                                        <div className="score-container">
-                                            <div className="progress-bar-container">
-                                                <div 
-                                                    className="progress-bar"
-                                                    style={{
-                                                        width: `${scores[question.id]}%`,
-                                                        backgroundColor: getProgressColor(scores[question.id])
-                                                    }}
-                                                />
-                                            </div>
-                                            <span className="score-text">
-                                                Score: {scores[question.id]}%
-                                            </span>
+                                    
+                                    <div className="score-container">
+                                        <div className="progress-bar-container">
+                                            <div 
+                                                className="progress-bar"
+                                                style={{
+                                                    width: `${scores[exercise.id] || 0}%`,
+                                                    backgroundColor: getProgressColor(scores[exercise.id] || 0)
+                                                }}
+                                            />
                                         </div>
-                                    )}
-                                    {feedbacks[question.id] && (
-                                        <div className={`feedback ${feedbacks[question.id].includes('Excellent') ? 'success' : 'error'}`}>
-                                            <pre>{feedbacks[question.id]}</pre>
+                                        <span className="score-text" style={{ color: '#e6e9f0' }}>
+                                            Score: {scores[exercise.id] || 0}%
+                                        </span>
+                                    </div>
+                                    
+                                    {feedbacks[exercise.id] && (
+                                        <div className={`feedback ${feedbacks[exercise.id].includes('Excellent') ? 'success' : 'error'}`}>
+                                            {feedbacks[exercise.id]}
                                         </div>
                                     )}
                                 </div>
                             ))}
                         </div>
                     )}
+                    
                     {selectedTP === 2 && (
                         <div className="exercises-container">
-                            {tp2Questions.map(question => (
-                                <div key={question.id} className="exercise-card">
-                                    <h3>{question.title}</h3>
-                                    <pre className="question-description">
-                                        {question.description}
-                                    </pre>
+                            {tp2Questions.map(exercise => (
+                                <div key={exercise.id} className="exercise-card">
+                                    <h3>{exercise.title}</h3>
+                                    <pre className="question-description">{exercise.description}</pre>
                                     <textarea
                                         className="code-input"
-                                        value={userCodes[question.id] || ''}
-                                        onChange={(e) => handleCodeChange(question.id, e.target.value)}
+                                        value={userCodes[exercise.id] || ''}
+                                        onChange={(e) => handleCodeChange(exercise.id, exercise.id, e.target.value)}
                                         placeholder="Écrivez votre code ici..."
                                         rows={10}
                                     />
                                     <div className="button-group">
                                         <button 
-                                            onClick={() => checkCode(question.id, userCodes[question.id] || '', question.expectedFunction)}
+                                            onClick={() => checkCode(exercise.id, exercise.id, userCodes[exercise.id], exercise.expectedFunction)}
                                             className="submit-button"
                                         >
                                             Vérifier
@@ -1292,64 +1727,64 @@ public class Main {
                                         <button 
                                             onClick={() => setShowSolutions(prev => ({
                                                 ...prev,
-                                                [question.id]: !prev[question.id]
+                                                [exercise.id]: !prev[exercise.id]
                                             }))}
-                                            className={`solution-button ${showSolutions[question.id] ? 'active' : ''}`}
+                                            className={`solution-button ${showSolutions[exercise.id] ? 'active' : ''}`}
                                         >
-                                            {showSolutions[question.id] ? 'Masquer la solution' : 'Voir la solution'}
+                                            {showSolutions[exercise.id] ? 'Masquer la solution' : 'Voir la solution'}
                                         </button>
                                     </div>
-                                    {showSolutions[question.id] && (
+                                    
+                                    {showSolutions[exercise.id] && (
                                         <div className="solution-container">
                                             <h4>Solution proposée :</h4>
                                             <pre className="solution-code">
-                                                {question.expectedFunction}
+                                                {exercise.expectedFunction}
                                             </pre>
                                         </div>
                                     )}
-                                    {scores[question.id] !== undefined && (
-                                        <div className="score-container">
-                                            <div className="progress-bar-container">
-                                                <div 
-                                                    className="progress-bar"
-                                                    style={{
-                                                        width: `${scores[question.id]}%`,
-                                                        backgroundColor: getProgressColor(scores[question.id])
-                                                    }}
-                                                />
-                                            </div>
-                                            <span className="score-text">
-                                                Score: {scores[question.id]}%
-                                            </span>
+                                    
+                                    <div className="score-container">
+                                        <div className="progress-bar-container">
+                                            <div 
+                                                className="progress-bar"
+                                                style={{
+                                                    width: `${scores[exercise.id] || 0}%`,
+                                                    backgroundColor: getProgressColor(scores[exercise.id] || 0)
+                                                }}
+                                            />
                                         </div>
-                                    )}
-                                    {feedbacks[question.id] && (
-                                        <div className={`feedback ${feedbacks[question.id].includes('Excellent') ? 'success' : 'error'}`}>
-                                            <pre>{feedbacks[question.id]}</pre>
+                                        <span className="score-text" style={{ color: '#e6e9f0' }}>
+                                            Score: {scores[exercise.id] || 0}%
+                                        </span>
+                                    </div>
+                                    
+                                    {feedbacks[exercise.id] && (
+                                        <div className={`feedback ${feedbacks[exercise.id].includes('Excellent') ? 'success' : 'error'}`}>
+                                            {feedbacks[exercise.id]}
                                         </div>
                                     )}
                                 </div>
                             ))}
                         </div>
                     )}
+                    
                     {selectedTP === 3 && (
                         <div className="exercises-container">
-                            {tp3Questions.map(question => (
-                                <div key={question.id} className="exercise-card">
-                                    <h3>{question.title}</h3>
-                                    <pre className="question-description">
-                                        {question.description}
-                                    </pre>
+                            {tp3Questions.map(exercise => (
+                                <div key={exercise.id} className="exercise-card">
+                                    <h3>{exercise.title}</h3>
+                                    <pre className="question-description">{exercise.description}</pre>
                                     <textarea
                                         className="code-input"
-                                        value={userCodes[question.id] || ''}
-                                        onChange={(e) => handleCodeChange(question.id, e.target.value)}
+                                        value={userCodes[exercise.id] || ''}
+                                        onChange={(e) => handleCodeChange(exercise.id, exercise.id, e.target.value)}
                                         placeholder="Écrivez votre code ici..."
                                         rows={10}
                                     />
                                     <div className="button-group">
                                         <button 
-                                            onClick={() => checkCode(question.id, userCodes[question.id] || '', question.expectedFunction)}
+                                            onClick={() => checkCode(exercise.id, exercise.id, userCodes[exercise.id], exercise.expectedFunction)}
                                             className="submit-button"
                                         >
                                             Vérifier
@@ -1357,44 +1792,51 @@ public class Main {
                                         <button 
                                             onClick={() => setShowSolutions(prev => ({
                                                 ...prev,
-                                                [question.id]: !prev[question.id]
+                                                [exercise.id]: !prev[exercise.id]
                                             }))}
-                                            className={`solution-button ${showSolutions[question.id] ? 'active' : ''}`}
+                                            className={`solution-button ${showSolutions[exercise.id] ? 'active' : ''}`}
                                         >
-                                            {showSolutions[question.id] ? 'Masquer la solution' : 'Voir la solution'}
+                                            {showSolutions[exercise.id] ? 'Masquer la solution' : 'Voir la solution'}
                                         </button>
                                     </div>
-                                    {showSolutions[question.id] && (
+                                    
+                                    {showSolutions[exercise.id] && (
                                         <div className="solution-container">
                                             <h4>Solution proposée :</h4>
                                             <pre className="solution-code">
-                                                {question.expectedFunction}
+                                                {exercise.expectedFunction}
                                             </pre>
                                         </div>
                                     )}
-                                    {scores[question.id] !== undefined && (
-                                        <div className="score-container">
-                                            <div className="progress-bar-container">
-                                                <div 
-                                                    className="progress-bar"
-                                                    style={{
-                                                        width: `${scores[question.id]}%`,
-                                                        backgroundColor: getProgressColor(scores[question.id])
-                                                    }}
-                                                />
-                                            </div>
-                                            <span className="score-text">
-                                                Score: {scores[question.id]}%
-                                            </span>
+                                    
+                                    <div className="score-container">
+                                        <div className="progress-bar-container">
+                                            <div 
+                                                className="progress-bar"
+                                                style={{
+                                                    width: `${scores[exercise.id] || 0}%`,
+                                                    backgroundColor: getProgressColor(scores[exercise.id] || 0)
+                                                }}
+                                            />
                                         </div>
-                                    )}
-                                    {feedbacks[question.id] && (
-                                        <div className={`feedback ${feedbacks[question.id].includes('Excellent') ? 'success' : 'error'}`}>
-                                            <pre>{feedbacks[question.id]}</pre>
+                                        <span className="score-text" style={{ color: '#e6e9f0' }}>
+                                            Score: {scores[exercise.id] || 0}%
+                                        </span>
+                                    </div>
+                                    
+                                    {feedbacks[exercise.id] && (
+                                        <div className={`feedback ${feedbacks[exercise.id].includes('Excellent') ? 'success' : 'error'}`}>
+                                            {feedbacks[exercise.id]}
                                         </div>
                                     )}
                                 </div>
                             ))}
+                        </div>
+                    )}
+                    
+                    {selectedTP === "3v2" && (
+                        <div className="exercises-container">
+                            {tp3v2Questions.map(exercise => renderMultiFileExercise(exercise))}
                         </div>
                     )}
                 </div>
