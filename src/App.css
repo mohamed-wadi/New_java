@@ -1,0 +1,403 @@
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(120deg, #181c2b 0%, #2e1a47 100%);
+  color: #e6e9f0;
+  font-family: 'Montserrat', 'Inter', 'Segoe UI', 'Roboto', Arial, sans-serif;
+  font-size: 1.13rem;
+  letter-spacing: 0.01em;
+  overflow-x: hidden;
+}
+
+.App {
+  min-height: 100vh;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background: linear-gradient(90deg, #7f53ac 0%, #647dee 50%, #43e97b 100%);
+  color: #fff;
+  padding: 44px 0 20px 0;
+  box-shadow: 0 4px 18px rgba(100,80,180,0.11);
+  border-bottom-left-radius: 32px;
+  border-bottom-right-radius: 32px;
+  text-align: center;
+}
+
+.App-header h1 {
+  margin: 0 0 18px 0;
+  font-size: 3.2rem;
+  letter-spacing: 0.04em;
+  font-weight: 800;
+  text-shadow: 0 2px 12px #43e97b44, 0 1px 0 #fff;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+main {
+  flex: 1;
+  padding: 48px 2vw;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* TP Selection Styles */
+.tp-selection-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.tp-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.tp-button {
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(67, 233, 123, 0.2);
+}
+
+.tp-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(67, 233, 123, 0.3);
+}
+
+.back-button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background: linear-gradient(90deg, #7f53ac 0%, #647dee 100%);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(127, 83, 172, 0.3);
+}
+
+.exercises-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.exercise-card {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e6e9f0;
+}
+
+.exercise-card h3 {
+  color: #43e97b;
+  margin-top: 0;
+  font-size: 1.5rem;
+}
+
+.question-description {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+  white-space: pre-wrap;
+  font-family: monospace;
+  color: #e6e9f0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.code-input {
+  width: 100%;
+  min-height: 200px;
+  padding: 1rem;
+  font-family: 'Fira Code', monospace;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  margin: 1rem 0;
+  resize: vertical;
+  color: #e6e9f0;
+}
+
+.code-input:focus {
+  outline: none;
+  border-color: #43e97b;
+  box-shadow: 0 0 0 2px rgba(67, 233, 123, 0.2);
+}
+
+.submit-button {
+  padding: 0.8rem 1.5rem;
+  background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.submit-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(67, 233, 123, 0.3);
+}
+
+.feedback {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.feedback.success {
+  background: rgba(67, 233, 123, 0.1);
+  color: #43e97b;
+  border: 1px solid rgba(67, 233, 123, 0.2);
+}
+
+.feedback.error {
+  background: rgba(255, 99, 71, 0.1);
+  color: tomato;
+  border: 1px solid rgba(255, 99, 71, 0.2);
+}
+
+footer {
+  text-align: center;
+  padding: 2rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+  .App-header h1 {
+    font-size: 2rem;
+  }
+
+  .tp-selection-container {
+    padding: 1rem;
+  }
+
+  .tp-button {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  .exercise-card {
+    padding: 1rem;
+  }
+
+  .question-description {
+    font-size: 0.9rem;
+  }
+}
+
+/* Score et barre de progression */
+.score-container {
+    margin: 15px 0;
+    width: 100%;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 20px;
+    background-color: #f5f5f5;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 5px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.progress-bar {
+    height: 100%;
+    transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out;
+    border-radius: 10px;
+}
+
+.score-text {
+    display: block;
+    text-align: center;
+    font-weight: bold;
+    color: #333;
+    margin-top: 5px;
+}
+
+/* Amélioration du feedback */
+.feedback {
+    margin-top: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    font-family: monospace;
+    white-space: pre-wrap;
+    line-height: 1.5;
+}
+
+.feedback.success {
+    background-color: rgba(76, 175, 80, 0.1);
+    border: 1px solid #4CAF50;
+    color: #2E7D32;
+}
+
+.feedback.error {
+    background-color: rgba(244, 67, 54, 0.1);
+    border: 1px solid #f44336;
+    color: #c62828;
+}
+
+/* Animation pour la barre de progression */
+@keyframes progressFill {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+.progress-bar {
+    animation: progressFill 1s ease-out;
+}
+
+/* Amélioration des symboles de vérification */
+.feedback pre {
+    margin: 0;
+    font-family: monospace;
+}
+
+/* Hover effect sur le bouton de vérification */
+.submit-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Transition douce pour tous les éléments */
+.exercise-card * {
+    transition: all 0.3s ease;
+}
+
+/* Groupe de boutons */
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+/* Bouton de solution */
+.solution-button {
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(90deg, #7f53ac 0%, #647dee 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.solution-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(127, 83, 172, 0.3);
+}
+
+.solution-button.active {
+    background: linear-gradient(90deg, #647dee 0%, #7f53ac 100%);
+}
+
+/* Conteneur de solution */
+.solution-container {
+    margin: 15px 0;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.solution-container h4 {
+    margin: 0 0 10px 0;
+    color: #43e97b;
+    font-size: 1.1rem;
+}
+
+.solution-code {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    border-radius: 6px;
+    margin: 0;
+    white-space: pre-wrap;
+    font-family: 'Fira Code', monospace;
+    color: #e6e9f0;
+    line-height: 1.5;
+    font-size: 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Animation pour l'apparition de la solution */
+.solution-container {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive design pour les boutons */
+@media (max-width: 768px) {
+    .button-group {
+        flex-direction: column;
+    }
+
+    .solution-button,
+    .submit-button {
+        width: 100%;
+    }
+}
