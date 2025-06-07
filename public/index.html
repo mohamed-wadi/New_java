@@ -15,7 +15,11 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-0GXREQTXG5');
+      gtag('config', 'G-0GXREQTXG5', {
+        'send_page_view': true,
+        'cookie_domain': 'auto',
+        'transport_type': 'beacon'
+      });
     </script>
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <!--
