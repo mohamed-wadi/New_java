@@ -3,23 +3,31 @@ export const GA_TRACKING_ID = 'G-0GXREQTXG5';
 
 // Initialize Google Analytics
 export const initGA = () => {
-    const script1 = document.createElement('script');
-    script1.async = true;
-    script1.src = `https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`;
-    document.head.appendChild(script1);
+    // Add script tag to head
+    if (!document.querySelector(`script[src*="googletagmanager"]`)) {
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`;
+        document.head.appendChild(script);
 
-    window.dataLayer = window.dataLayer || [];
-    function gtag() {
-        window.dataLayer.push(arguments);
+        // Initialize dataLayer and gtag function
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+            window.dataLayer.push(arguments);
+        }
+        window.gtag = gtag;
+
+        // Initialize gtag
+        gtag('js', new Date());
+        gtag('config', GA_TRACKING_ID, {
+            debug_mode: true,
+            send_page_view: true,
+            cookie_domain: 'auto',
+            transport_type: 'beacon'
+        });
+
+        console.log('Google Analytics initialized with ID:', GA_TRACKING_ID);
     }
-    gtag('js', new Date());
-    gtag('config', GA_TRACKING_ID, {
-        send_page_view: true,
-        cookie_domain: 'auto',
-        transport_type: 'beacon'
-    });
-
-    window.gtag = gtag;
 };
 
 // Track Page Views
@@ -28,6 +36,9 @@ export const pageview = (url) => {
         window.gtag('config', GA_TRACKING_ID, {
             page_path: url,
         });
+        console.log('Pageview tracked:', url);
+    } else {
+        console.warn('gtag not initialized');
     }
 };
 
@@ -39,5 +50,8 @@ export const event = ({ action, category, label, value }) => {
             event_label: label,
             value: value,
         });
+        console.log('Event tracked:', { action, category, label, value });
+    } else {
+        console.warn('gtag not initialized');
     }
 }; 
