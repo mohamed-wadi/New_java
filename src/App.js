@@ -1,8 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import TPSelection from './components/TPSelection';
+import { initGA, pageview } from './analytics';
 
 function App() {
+  useEffect(() => {
+    // Initialize Google Analytics
+    initGA();
+    // Track initial page view
+    pageview(window.location.pathname);
+  }, []);
+
   return (
     <div className="App">
       <header className="App-header">
